@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microsoft vs Apple</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <nav class="topbar">
+      <div class="brand">Microsoft vs Apple</div>
+      <div class="language-switcher" aria-label="Language switcher">
+        <button class="lang-btn active" type="button" data-lang="hu">🇭🇺 HU</button>
+        <button class="lang-btn" type="button" data-lang="en">🇬🇧 EN</button>
+        <button class="lang-btn" type="button" data-lang="ro">🇷🇴 RO</button>
+      </div>
+      <div class="nav-links">
+        <a class="nav-link" href="../index.html">Vissza a homepage-re</a>
+        <a class="nav-link" href="#projekt">Projekt</a>
+        <a class="nav-link" href="#diagramok">Diagramok</a>
+        <a class="nav-link" href="#megallapitasok">Megállapítások</a>
+        <a class="nav-link" href="#forrasok">Források</a>
+      </div>
+    </nav>
+
+    <section class="hero-content">
+      <p class="eyebrow">Adatelemzés és adatvizualizáció</p>
+      <h1>Microsoft és Apple összehasonlítása pénzügyi és üzleti adatok alapján.</h1>
+      <p class="lead">
+        Ez a projekt azt vizsgálja, hogyan különbözik a két technológiai óriás
+        növekedése, profitabilitása és üzleti szerkezete. A weboldal célja, hogy
+        közérthető módon mutassa be a hivatalos vállalati jelentésekből származó adatokat.
+      </p>
+      <div class="hero-metrics">
+        <div class="metric">
+          <span class="metric-label">Vállalatok</span>
+          <strong>Microsoft vs Apple</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Forrás</span>
+          <strong>Hivatalos annual reportok</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Fókusz</span>
+          <strong>Bevétel, profit, szegmensek</strong>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <a class="button button-primary" href="#projekt">Projekt áttekintése</a>
+        <button class="button button-secondary" id="theme-toggle" type="button">Hangulat váltása</button>
+      </div>
+    </section>
+  </header>
+
+  <main>
+    <section class="panel" id="projekt">
+      <div class="panel-heading">
+        <p class="section-label">Projektáttekintés</p>
+        <h2>Mi a kutatási kérdés?</h2>
+      </div>
+
+      <div class="card-grid">
+        <article class="card">
+          <h3>Növekedés</h3>
+          <p>Hogyan alakult a Microsoft és az Apple árbevétele az elmúlt években, és melyik vállalat tudott egyenletesebben növekedni?</p>
+        </article>
+
+        <article class="card">
+          <h3>Profitabilitás</h3>
+          <p>Melyik vállalat működik magasabb jövedelmezőséggel, és mennyire látszik a különbség a nettó profitban és a marginokban?</p>
+        </article>
+
+        <article class="card">
+          <h3>Üzleti szerkezet</h3>
+          <p>Mennyire diverzifikált a két cég bevételi szerkezete, és melyik függ jobban egy-egy domináns üzletágtól?</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="reszek">
+      <div class="panel-heading">
+        <p class="section-label">Elemzési keret</p>
+        <h2>Milyen szempontok mentén hasonlítom össze a két vállalatot?</h2>
+      </div>
+
+      <div class="timeline two-columns">
+        <article class="timeline-item">
+          <p class="timeline-step">1. dimenzió</p>
+          <h3>Bevételi trendek</h3>
+          <p>Éves árbevételi adatok alapján megvizsgálom, hogy a két vállalat növekedése milyen mintát követett, és mennyire volt stabil az elmúlt években.</p>
+          <p class="checkpoint">Fő mutatók: revenue, year-over-year growth.</p>
+        </article>
+
+        <article class="timeline-item">
+          <p class="timeline-step">2. dimenzió</p>
+          <h3>Profit és marzsok</h3>
+          <p>Nem csak a bevétel fontos, hanem az is, hogy abból mennyi profit marad. Itt a nettó profitot, operating income-ot és a marginokat vetem össze.</p>
+          <p class="checkpoint">Fő mutatók: net income, operating income, profit margin.</p>
+        </article>
+
+        <article class="timeline-item">
+          <p class="timeline-step">3. dimenzió</p>
+          <h3>Üzletági bontás</h3>
+          <p>A Microsoft több nagy üzleti szegmensre épül, míg az Apple esetében az iPhone és a Services kiemelten fontos. Ez a rész a bevételszerkezetet mutatja be.</p>
+          <p class="checkpoint">Fő mutatók: business segments, product categories.</p>
+        </article>
+
+        <article class="timeline-item">
+          <p class="timeline-step">4. dimenzió</p>
+          <h3>Értelmezési korlátok</h3>
+          <p>A két cég üzleti modellje nem teljesen azonos, és a pénzügyi éveik sem ugyanakkor zárulnak. Ezért az összehasonlításnál a kontextust is külön jelzem.</p>
+          <p class="checkpoint">Megjegyzés: Microsoft FY2025 vége 2025. június 30., Apple FY2025 vége 2025. szeptember 27.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="diagramok">
+      <div class="panel-heading">
+        <p class="section-label">Vizualizációk</p>
+        <h2>Összehasonlító diagramok a hivatalos jelentések alapján</h2>
+      </div>
+
+      <div class="chart-grid">
+        <article class="chart-card">
+          <div class="chart-placeholder chart-data" id="chart-revenue">Betöltés...</div>
+          <h3>Éves árbevétel összehasonlítása</h3>
+          <p>Oszlop- vagy vonaldiagram az éves revenue adatokhoz, hogy jól látszódjon a növekedési pálya.</p>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-placeholder chart-data" id="chart-profit">Betöltés...</div>
+          <h3>Nettó profit összehasonlítása</h3>
+          <p>Megmutatja, melyik vállalat tudott több nyereséget termelni és mennyire ingadozott a teljesítmény.</p>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-placeholder chart-data" id="chart-margin">Betöltés...</div>
+          <h3>Profitmarzsok</h3>
+          <p>Egy százalékos alapú vizualizáció, amely jobban összehasonlíthatóvá teszi a két céget méretkülönbség mellett is.</p>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-placeholder chart-data" id="chart-segments">Betöltés...</div>
+          <h3>Bevételi szerkezet</h3>
+          <p>Szegmens- vagy termékkategória szerinti bontás, hogy látszódjon a diverzifikáció mértéke.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="megallapitasok">
+      <div class="panel-heading">
+        <p class="section-label">Fő megállapítások</p>
+        <h2>Mit mutat az összehasonlítás?</h2>
+      </div>
+
+      <div class="insight-grid">
+        <article class="insight-card">
+          <p class="timeline-step">01</p>
+          <h3>Az Apple nagyobb árbevételt ér el</h3>
+          <p>Az éves revenue alapján az Apple mindhárom vizsgált évben nagyobb összbevételt ért el, ami jól mutatja a vállalat méretét és globális piaci súlyát.</p>
+        </article>
+
+        <article class="insight-card">
+          <p class="timeline-step">02</p>
+          <h3>A Microsoft profitabilitása erősebb</h3>
+          <p>A nettó profitmarzs adatok alapján a Microsoft hatékonyabban alakítja át bevételét nyereséggé, ami különösen a szoftver- és cloudalapú modell erejét emeli ki.</p>
+        </article>
+
+        <article class="insight-card">
+          <p class="timeline-step">03</p>
+          <h3>Eltérő üzleti szerkezet</h3>
+          <p>A Microsoft bevétele több nagy szegmens között oszlik meg, míg az Apple-nél az iPhone továbbra is domináns. Ez a diverzifikációs különbség fontos stratégiai eltérés.</p>
+        </article>
+      </div>
+
+      <div class="summary-strip">
+        <div class="summary-item">
+          <span class="metric-label">Összkép</span>
+          <strong>Apple: nagyobb bevétel</strong>
+        </div>
+        <div class="summary-item">
+          <span class="metric-label">Hatékonyság</span>
+          <strong>Microsoft: magasabb marzs</strong>
+        </div>
+        <div class="summary-item">
+          <span class="metric-label">Szerkezet</span>
+          <strong>Microsoft: diverzifikáltabb</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <p class="section-label">Adatfájl</p>
+        <h2>A projekt külön adatállományból dolgozik</h2>
+      </div>
+      <p class="accent-text">
+        Az összehasonlításhoz használt adatokat külön JSON fájlban tárolom, így a
+        vizualizációk és a weboldal tartalma nincsenek közvetlenül beégetve a HTML-be.
+        Ez azért hasznos, mert ha új pénzügyi év adatai jelennek meg, vagy további
+        mutatókat szeretnék hozzáadni, akkor elég az adatállományt frissíteni, és az
+        oldal ugyanarra a struktúrára építve tovább használható marad.
+      </p>
+      <p class="accent-text">
+        A fájl jelenleg tartalmazza a Microsoft és az Apple 2023, 2024 és 2025-ös
+        éves árbevételét, operating income értékeit, nettó profitját, profitmarzsait,
+        valamint a 2025-ös bevételi szerkezet fő kategóriáit. Ez jó alapot ad az
+        összehasonlító elemzéshez, és később további évekkel, régiós bontásokkal vagy
+        részletesebb üzletági adatokkal is bővíthető.
+      </p>
+      <p class="accent-text">
+        Ez a megoldás módszertanilag is előnyös: az adatok elkülönülnek a megjelenítéstől,
+        ezért a projekt átláthatóbb, újrahasznosíthatóbb és könnyebben ellenőrizhető.
+        Ugyanebből az adatfájlból több különböző diagram is felépíthető.
+      </p>
+      <p class="data-file-link">
+        Adatfájl: <code>data/microsoft-apple-data.json</code>
+      </p>
+    </section>
+
+    <section class="panel" id="modszer">
+      <div class="panel-heading">
+        <p class="section-label">Módszertan</p>
+        <h2>Hogyan épül fel ez az összehasonlítás?</h2>
+      </div>
+      <div class="method-grid">
+        <article class="method-card">
+          <h3>1. Adatgyűjtés</h3>
+          <p>Az adatok a Microsoft és az Apple hivatalos befektetői és éves jelentéseiből származnak, így elsődleges és ellenőrizhető forrásokra épülnek.</p>
+        </article>
+        <article class="method-card">
+          <h3>2. Adattisztítás</h3>
+          <p>Az adatokat egységes szerkezetbe rendeztem egy külön JSON fájlban, hogy ugyanaz a forrás több diagramot is ki tudjon szolgálni.</p>
+        </article>
+        <article class="method-card">
+          <h3>3. Vizualizáció</h3>
+          <p>A weboldal JavaScript segítségével tölti be és jeleníti meg az adatokat, így a grafikonok frissíthetők és újrahasznosíthatók.</p>
+        </article>
+      </div>
+      <p class="method-note">
+        Fontos korlát: a cégek pénzügyi évei eltérő időpontban zárulnak, ezért az eredmények értelmezésénél ezt a kontextust figyelembe kell venni.
+      </p>
+    </section>
+
+    <section class="panel" id="forrasok">
+      <div class="panel-heading">
+        <p class="section-label">Források</p>
+        <h2>Felhasznált hivatalos adatok és hivatkozások</h2>
+      </div>
+      <div class="sources-list">
+        <a class="source-link" href="https://www.microsoft.com/investor/reports/ar25/" target="_blank" rel="noreferrer">Microsoft Annual Report FY2025</a>
+        <a class="source-link" href="https://www.microsoft.com/en-us/investor" target="_blank" rel="noreferrer">Microsoft Investor Relations</a>
+        <a class="source-link" href="https://investor.apple.com/" target="_blank" rel="noreferrer">Apple Investor Relations</a>
+        <a class="source-link" href="https://investor.apple.com/sec-filings/default.aspx" target="_blank" rel="noreferrer">Apple SEC Filings</a>
+        <a class="source-link" href="https://www.apple.com/newsroom/2025/10/apple-reports-fourth-quarter-results/" target="_blank" rel="noreferrer">Apple FY2025 Q4 Results</a>
+      </div>
+    </section>
+
+    <section class="panel accent-panel">
+      <div class="panel-heading">
+        <p class="section-label">Összegzés</p>
+        <h2>A projekt egy működő, bővíthető adatvizualizációs oldal.</h2>
+      </div>
+      <p class="accent-text">
+        Az oldal bemutatja, hogyan lehet vállalati pénzügyi adatokat külön adatfájlban
+        kezelni, majd ezekből strukturált és vizuálisan értelmezhető webes megjelenítést készíteni.
+      </p>
+      <p class="accent-text">
+        A Microsoft vs Apple összehasonlítás jó példa arra, hogy az adatvizualizáció nemcsak számok bemutatása, hanem üzleti mintázatok, különbségek és következtetések feltárása is.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Készítette: Adatelemzés és adatvizualizáció projekt</p>
+    <p>Téma: Microsoft vs Apple pénzügyi összehasonlítás</p>
+  </footer>
+
+  <script src="../language.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

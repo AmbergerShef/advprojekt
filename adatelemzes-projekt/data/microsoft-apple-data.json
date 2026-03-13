@@ -1,0 +1,115 @@
+{
+  "meta": {
+    "title": "Microsoft vs Apple financial comparison",
+    "unit": "USD million",
+    "updated": "2026-03-13",
+    "notes": [
+      "Microsoft fiscal year ends on June 30.",
+      "Apple fiscal year ends in late September; FY2025 ended on September 27, 2025.",
+      "The two companies are not perfectly comparable because their business models and fiscal calendars differ."
+    ],
+    "sources": {
+      "microsoft": "https://www.microsoft.com/investor/reports/ar25/",
+      "apple_10k": "https://investor.apple.com/sec-filings/sec-filings-details/default.aspx?FilingId=18880179",
+      "apple_results_2025": "https://www.apple.com/newsroom/2025/10/apple-reports-fourth-quarter-results/"
+    }
+  },
+  "companies": {
+    "microsoft": {
+      "displayName": "Microsoft",
+      "fiscalYearEnd": "June 30",
+      "annual": [
+        {
+          "year": 2023,
+          "revenue": 211915,
+          "operatingIncome": 88523,
+          "netIncome": 72361,
+          "grossMarginPct": 68.9,
+          "netMarginPct": 34.1
+        },
+        {
+          "year": 2024,
+          "revenue": 245122,
+          "operatingIncome": 109433,
+          "netIncome": 88136,
+          "grossMarginPct": 69.8,
+          "netMarginPct": 36.0
+        },
+        {
+          "year": 2025,
+          "revenue": 281724,
+          "operatingIncome": 128528,
+          "netIncome": 101832,
+          "grossMarginPct": 68.8,
+          "netMarginPct": 36.1
+        }
+      ],
+      "segments2025": [
+        {
+          "name": "Productivity and Business Processes",
+          "revenue": 120810
+        },
+        {
+          "name": "Intelligent Cloud",
+          "revenue": 106265
+        },
+        {
+          "name": "More Personal Computing",
+          "revenue": 54649
+        }
+      ]
+    },
+    "apple": {
+      "displayName": "Apple",
+      "fiscalYearEnd": "September 27, 2025",
+      "annual": [
+        {
+          "year": 2023,
+          "revenue": 383285,
+          "operatingIncome": 114301,
+          "netIncome": 96995,
+          "grossMarginPct": 44.1,
+          "netMarginPct": 25.3
+        },
+        {
+          "year": 2024,
+          "revenue": 391035,
+          "operatingIncome": 123216,
+          "netIncome": 93736,
+          "grossMarginPct": 46.2,
+          "netMarginPct": 24.0
+        },
+        {
+          "year": 2025,
+          "revenue": 416161,
+          "operatingIncome": 133050,
+          "netIncome": 112010,
+          "grossMarginPct": 46.9,
+          "netMarginPct": 26.9
+        }
+      ],
+      "segments2025": [
+        {
+          "name": "iPhone",
+          "revenue": 209586
+        },
+        {
+          "name": "Services",
+          "revenue": 109158
+        },
+        {
+          "name": "Wearables, Home and Accessories",
+          "revenue": 35686
+        },
+        {
+          "name": "Mac",
+          "revenue": 33708
+        },
+        {
+          "name": "iPad",
+          "revenue": 28023
+        }
+      ]
+    }
+  }
+}

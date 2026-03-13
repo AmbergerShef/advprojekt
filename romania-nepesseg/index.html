@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romanian Cities: A Decade of Population Change (2010-2019)</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            color: white;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .language-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .lang-btn.active {
+            background: white;
+            color: #1a365d;
+            border-color: white;
+        }
+        
+        header h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .intro {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+        
+        .intro h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.8rem;
+            color: #1a365d;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #e53e3e;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .intro p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #fed7d7 0%, #feb2b2 100%);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c53030;
+        }
+        
+        .dashboard-section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-section h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.8rem;
+            color: #1a365d;
+            margin-bottom: 10px;
+        }
+        
+        .dashboard-section .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+        
+        .chart-container {
+            margin-bottom: 30px;
+        }
+        
+        .chart-container h3 {
+            font-size: 1.2rem;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .key-finding {
+            background: linear-gradient(120deg, #e6fffa 0%, #b2f5ea 100%);
+            border-left: 4px solid #38b2ac;
+            padding: 20px 25px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .key-finding h4 {
+            color: #234e52;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .key-finding p {
+            color: #285e61;
+            margin: 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card.positive {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            border-color: #68d391;
+        }
+        
+        .stat-card.negative {
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+            border-color: #fc8181;
+        }
+        
+        .stat-card .city {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1a365d;
+            margin-bottom: 8px;
+        }
+        
+        .stat-card .change {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .stat-card.positive .change {
+            color: #276749;
+        }
+        
+        .stat-card.negative .change {
+            color: #c53030;
+        }
+        
+        .stat-card .years {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-top: 5px;
+        }
+        
+        .conclusion {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+        }
+        
+        .conclusion h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .conclusion p {
+            opacity: 0.95;
+            margin-bottom: 15px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        
+        footer a {
+            color: #2b6cb0;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .intro, .dashboard-section, .conclusion {
+                padding: 25px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .language-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            .back-link {
+                top: 10px;
+                left: 10px;
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .lang-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a class="back-link" href="../index.html" data-en="Back to homepage" data-hu="Vissza a homepage-re" data-ro="Înapoi la homepage">Back to homepage</a>
+        <div class="language-toggle">
+            <button class="lang-btn active" type="button" data-lang="hu">🇭🇺 HU</button>
+            <button class="lang-btn" type="button" data-lang="en">🇬🇧 EN</button>
+            <button class="lang-btn" type="button" data-lang="ro">🇷🇴 RO</button>
+        </div>
+        <div class="container">
+            <h1 data-en="Romanian Cities: A Decade of Population Change" data-hu="Románia városai: Népességváltozás egy évtized alatt" data-ro="Orașele României: un deceniu de schimbare a populației">Romanian Cities: A Decade of Population Change</h1>
+            <p data-en="Exploring demographic trends across Romania's major urban centers (2010-2019)" data-hu="Demográfiai trendek feltárása Románia nagyvárosi központjaiban (2010-2019)" data-ro="Explorarea tendințelor demografice din principalele centre urbane ale României (2010-2019)">Exploring demographic trends across Romania's major urban centers (2010-2019)</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <section class="intro">
+            <h2 data-en="Understanding Romania's Urban Demographic Shift" data-hu="Románia városi demográfiai változásának megértése" data-ro="Înțelegerea schimbării demografice urbane din România">Understanding Romania's Urban Demographic Shift</h2>
+            <p data-en="Between 2010 and 2019, Romania experienced significant demographic changes across its major urban centers. This data-driven analysis examines population trends in <span class='highlight'>six major Romanian cities</span>: Bucharest, Cluj-Napoca, Timișoara, Iași, Constanța, and Brașov." data-hu="2010 és 2019 között Románia jelentős demográfiai változásokat tapasztalt nagyvárosi központjaiban. Ez az adatvezérelt elemzés a <span class='highlight'>hat román nagyváros</span> népességi trendjeit vizsgálja: Bukarest, Kolozsvár, Temesvár, Iași, Konstanca és Brassó." data-ro="Între 2010 și 2019, România a trecut prin schimbări demografice importante în principalele sale centre urbane. Această analiză bazată pe date examinează tendințele populației în <span class='highlight'>șase mari orașe din România</span>: București, Cluj-Napoca, Timișoara, Iași, Constanța și Brașov.">Between 2010 and 2019, Romania experienced significant demographic changes across its major urban centers. This data-driven analysis examines population trends in <span class="highlight">six major Romanian cities</span>: Bucharest, Cluj-Napoca, Timișoara, Iași, Constanța, and Brașov.</p>
+            <p data-en="The data reveals a complex picture of Romanian urbanization: while the capital city Bucharest faced population decline, several regional centers showed remarkable resilience and even growth. These trends reflect broader socioeconomic shifts including rural-urban migration, economic opportunities in tech hubs, and the aftermath of emigration." data-hu="Az adatok összetett képet mutatnak a román urbanizációról: míg a főváros, Bukarest népességcsökkenést tapasztalt, számos regionális központ figyelemre méltó ellenálló képességet és még növekedést is mutatott. Ezek a trendek a szélesebb társadalmi-gazdasági változásokat tükrözik, beleértve a vidéki-városi migrációt, az IT-központok gazdasági lehetőségeit és a kivándorlás következményeit." data-ro="Datele arată o imagine complexă a urbanizării din România: în timp ce capitala București a pierdut populație, mai multe centre regionale au demonstrat reziliență și chiar creștere. Aceste tendințe reflectă schimbări socio-economice mai ample, inclusiv migrația rural-urbană, oportunitățile economice din hub-urile IT și efectele emigrației.">The data reveals a complex picture of Romanian urbanization: while the capital city Bucharest faced population decline, several regional centers showed remarkable resilience and even growth. These trends reflect broader socioeconomic shifts including rural-urban migration, economic opportunities in tech hubs, and the aftermath of emigration.</p>
+        </section>
+        
+        <section class="dashboard-section">
+            <h2 data-en="Interactive Population Dashboard" data-hu="Interaktív népességi dashboard" data-ro="Dashboard interactiv al populației">Interactive Population Dashboard</h2>
+            <p class="subtitle" data-en="Explore the data through multiple visualizations" data-hu="Az adatok felfedezése több vizualizáción keresztül" data-ro="Explorează datele prin mai multe vizualizări">Explore the data through multiple visualizations</p>
+            
+            <div class="chart-container">
+                <h3 data-en="Population Trends Over Time (2010-2019)" data-hu="Népességi trendek az idő során (2010-2019)" data-ro="Tendințele populației în timp (2010-2019)">Population Trends Over Time (2010-2019)</h3>
+                <div id="line-chart"></div>
+            </div>
+            
+            <div class="key-finding">
+                <h4 data-en="📊 Key Insight" data-hu="📊 Kulcsfontosságú megállapítás" data-ro="📊 Observație-cheie">📊 Key Insight</h4>
+                <p data-en="Cluj-Napoca stands out as the only major city showing consistent population growth throughout the decade, driven by its thriving tech sector and university presence." data-hu="Kolozsvár az egyetlen nagyváros, amely következetes népességnövekedést mutat az évtized során, amelyet a virágzó IT-szektor és az egyetem jelenléte hajt." data-ro="Cluj-Napoca se remarcă drept singurul oraș mare care a arătat o creștere constantă a populației pe parcursul deceniului, impulsionată de sectorul IT și de prezența universitară.">Cluj-Napoca stands out as the only major city showing consistent population growth throughout the decade, driven by its thriving tech sector and university presence.</p>
+            </div>
+            
+            <div class="chart-container">
+                <h3 data-en="Population Change by City (2010 vs 2019)" data-hu="Népességváltozás városonként (2010 vs 2019)" data-ro="Schimbarea populației pe orașe (2010 vs 2019)">Population Change by City (2010 vs 2019)</h3>
+                <div id="bar-chart"></div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card negative">
+                    <div class="city" data-en="Bucharest" data-hu="Bukarest" data-ro="București">Bucharest</div>
+                    <div class="change">-8.7%</div>
+                    <div class="years" data-en="2010 → 2019" data-hu="2010 → 2019">2010 → 2019</div>
+                </div>
+                <div class="stat-card positive">
+                    <div class="city" data-en="Cluj-Napoca" data-hu="Kolozsvár" data-ro="Cluj-Napoca">Cluj-Napoca</div>
+                    <div class="change">+9.2%</div>
+                    <div class="years" data-en="2010 → 2019" data-hu="2010 → 2019">2010 → 2019</div>
+                </div>
+                <div class="stat-card negative">
+                    <div class="city" data-en="Constanța" data-hu="Konstanca" data-ro="Constanța">Constanța</div>
+                    <div class="change">-5.1%</div>
+                    <div class="years" data-en="2010 → 2019" data-hu="2010 → 2019">2010 → 2019</div>
+                </div>
+                <div class="stat-card negative">
+                    <div class="city" data-en="Timișoara" data-hu="Temesvár" data-ro="Timișoara">Timișoara</div>
+                    <div class="change">-3.2%</div>
+                    <div class="years" data-en="2010 → 2019" data-hu="2010 → 2019">2010 → 2019</div>
+                </div>
+                <div class="stat-card negative">
+                    <div class="city" data-en="Brașov" data-hu="Brassó" data-ro="Brașov">Brașov</div>
+                    <div class="change">-2.8%</div>
+                    <div class="years" data-en="2010 → 2019" data-hu="2010 → 2019">2010 → 2019</div>
+                </div>
+                <div class="stat-card negative">
+                    <div class="city" data-en="Iași" data-hu="Iași" data-ro="Iași">Iași</div>
+                    <div class="change">-1.4%</div>
+                    <div class="years" data-en="2010 → 2019" data-hu="2010 → 2019">2010 → 2019</div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3 data-en="Detailed City Statistics" data-hu="Részletes városi statisztikák" data-ro="Statistici detaliate pe orașe">Detailed City Statistics</h3>
+                <div id="table-chart"></div>
+            </div>
+        </section>
+        
+        <section class="conclusion">
+            <h2 data-en="Conclusions" data-hu="Következtetések" data-ro="Concluzii">Conclusions</h2>
+            <p data-en="<strong>The Romanian urban landscape of the 2010s was defined by divergence.</strong> While Bucharest remained the country's dominant metropolitan area with over 1.7 million inhabitants, it experienced an 8.7% decline— representing a loss of approximately 165,000 residents over the decade." data-hu="<strong>A 2010-es évek román városi táját a szétválás határozta meg.</strong> Míg Bukarest az ország domináns metropolisza maradt több mint 1,7 millió lakossal, 8,7%-os csökkenést tapasztalt - körülbelül 165 000 lakos veszteséget jelent az évtized során." data-ro="<strong>Peisajul urban al României în anii 2010 a fost definit de divergență.</strong> Deși Bucureștiul a rămas principala zonă metropolitană a țării, cu peste 1,7 milioane de locuitori, a înregistrat o scădere de 8,7%, ceea ce înseamnă aproximativ 165.000 de locuitori pierduți în decursul deceniului."><strong>The Romanian urban landscape of the 2010s was defined by divergence.</strong> While Bucharest remained the country's dominant metropolitan area with over 1.7 million inhabitants, it experienced an 8.7% decline— representing a loss of approximately 165,000 residents over the decade.</p>
+            <p data-en="<strong>Cluj-Napoca emerged as the growth leader</strong>, bucking the national trend with a 9.2% increase. This success can be attributed to its strong university (over 30,000 students), growing IT sector, and relatively high quality of life compared to other Romanian cities." data-hu="<strong>Kolozsvár a növekedés vezetőjeként emelkedett ki</strong>, 9,2%-os növekedéssel szembeszállva az országos trenddel. Ez a siker az erős egyetemnek (több mint 30 000 diák), a növekvő IT-szektornak és a többi román városhoz képest viszonylag magas életminőségnek tulajdonítható." data-ro="<strong>Cluj-Napoca s-a remarcat ca lider al creșterii</strong>, contrazicând tendința națională printr-o creștere de 9,2%. Acest succes poate fi explicat prin universitatea puternică, sectorul IT în expansiune și calitatea relativ ridicată a vieții."><strong>Cluj-Napoca emerged as the growth leader</strong>, bucking the national trend with a 9.2% increase. This success can be attributed to its strong university (over 30,000 students), growing IT sector, and relatively high quality of life compared to other Romanian cities.</p>
+            <p data-en="<strong>Regional centers faced varying challenges.</strong> Constanța, Romania's largest port city, saw significant decline likely due to economic factors. Timișoara, Brașov, and Iași all experienced modest declines but showed signs of stabilization by the end of the decade." data-hu="<strong>A regionális központok különböző kihívásokkal szembesültek.</strong> Konstanca, Románia legnagyobb kikötővárosa jelentős csökkenést tapasztalt, valószínűleg gazdasági tényezők miatt. Temesvár, Brassó és Iași mind mérsékelt csökkenést tapasztalt, de az évtized végére stabilizáció jeleit mutatta." data-ro="<strong>Centrele regionale s-au confruntat cu provocări diferite.</strong> Constanța, cel mai mare oraș-port al României, a înregistrat un declin semnificativ, probabil din motive economice. Timișoara, Brașov și Iași au avut scăderi moderate, dar au arătat semne de stabilizare spre finalul deceniului."><strong>Regional centers faced varying challenges.</strong> Constanța, Romania's largest port city, saw significant decline likely due to economic factors. Timișoara, Brașov, and Iași all experienced modest declines but showed signs of stabilization by the end of the decade.</p>
+            <p data-en="These demographic trends continue to shape Romanian urban planning, real estate markets, and policy decisions into the 2020s." data-hu="Ezek a demográfiai trendek továbbra is formálják a román várostervezést, az ingatlanpiacot és a politikai döntéseket a 2020-as években." data-ro="Aceste tendințe demografice continuă să influențeze planificarea urbană, piața imobiliară și deciziile de politică publică din România și în anii 2020.">These demographic trends continue to shape Romanian urban planning, real estate markets, and policy decisions into the 2020s.</p>
+        </section>
+        
+        <footer>
+            <p data-en="Data source: Romanian National Institute of Statistics (INS) estimates" data-hu="Adatforrás: Románia Statisztikai Hivatal (INS) becslései" data-ro="Sursa datelor: estimările Institutului Național de Statistică (INS) din România">Data source: Romanian National Institute of Statistics (INS) estimates</p>
+            <p>Visualization built with <a href="https://vega.github.io/vega-lite/" target="_blank">Vega-Lite</a></p>
+        </footer>
+    </div>
+
+    <script src="../language.js"></script>
+    <script>
+        // Population data for 6 Romanian cities (2010-2019) - INS estimates
+        const populationData = [
+            // Bucharest
+            {city: "Bucharest", cityHU: "Bukarest", year: 2010, population: 1883000},
+            {city: "Bucharest", cityHU: "Bukarest", year: 2011, population: 1876000},
+            {city: "Bucharest", cityHU: "Bukarest", year: 2012, population: 1869000},
+            {city: "Bucharest", cityHU: "Bukarest", year: 2013, population: 1859000},
+            {city: "Bucharest", cityHU: "Bukarest", year: 2014, population: 1848000},
+            {city: "Bucharest", cityHU: "Bukarest", year: 2015, population: 1835000},
+            {city: "Bucharest", cityHU: "Bukarest", year: 2016, population: 1823000},
+            {city: "Bucharest", cityHU: "Bukarest", year: 2017, population: 1810000},
+            {city: "Bucharest", cityHU: "Bukarest", year: 2018, population: 1795000},
+            {city: "Bucharest", cityHU: "Bukarest", year: 2019, population: 1720000},
+            
+            // Cluj-Napoca
+            {city: "Cluj-Napoca", cityHU: "Kolozsvár", year: 2010, population: 324000},
+            {city: "Cluj-Napoca", cityHU: "Kolozsvár", year: 2011, population: 327000},
+            {city: "Cluj-Napoca", cityHU: "Kolozsvár", year: 2012, population: 330000},
+            {city: "Cluj-Napoca", cityHU: "Kolozsvár", year: 2013, population: 333000},
+            {city: "Cluj-Napoca", cityHU: "Kolozsvár", year: 2014, population: 336000},
+            {city: "Cluj-Napoca", cityHU: "Kolozsvár", year: 2015, population: 339000},
+            {city: "Cluj-Napoca", cityHU: "Kolozsvár", year: 2016, population: 343000},
+            {city: "Cluj-Napoca", cityHU: "Kolozsvár", year: 2017, population: 347000},
+            {city: "Cluj-Napoca", cityHU: "Kolozsvár", year: 2018, population: 351000},
+            {city: "Cluj-Napoca", cityHU: "Kolozsvár", year: 2019, population: 354000},
+            
+            // Timișoara
+            {city: "Timișoara", cityHU: "Temesvár", year: 2010, population: 319000},
+            {city: "Timișoara", cityHU: "Temesvár", year: 2011, population: 318500},
+            {city: "Timișoara", cityHU: "Temesvár", year: 2012, population: 318000},
+            {city: "Timișoara", cityHU: "Temesvár", year: 2013, population: 316500},
+            {city: "Timișoara", cityHU: "Temesvár", year: 2014, population: 315000},
+            {city: "Timișoara", cityHU: "Temesvár", year: 2015, population: 314000},
+            {city: "Timișoara", cityHU: "Temesvár", year: 2016, population: 313000},
+            {city: "Timișoara", cityHU: "Temesvár", year: 2017, population: 312000},
+            {city: "Timișoara", cityHU: "Temesvár", year: 2018, population: 311000},
+            {city: "Timișoara", cityHU: "Temesvár", year: 2019, population: 309000},
+            
+            // Iași
+            {city: "Iași", cityHU: "Iași", year: 2010, population: 340000},
+            {city: "Iași", cityHU: "Iași", year: 2011, population: 340500},
+            {city: "Iași", cityHU: "Iași", year: 2012, population: 341000},
+            {city: "Iași", cityHU: "Iași", year: 2013, population: 340000},
+            {city: "Iași", cityHU: "Iași", year: 2014, population: 339000},
+            {city: "Iași", cityHU: "Iași", year: 2015, population: 338000},
+            {city: "Iași", cityHU: "Iași", year: 2016, population: 337000},
+            {city: "Iași", cityHU: "Iași", year: 2017, population: 337500},
+            {city: "Iași", cityHU: "Iași", year: 2018, population: 337000},
+            {city: "Iași", cityHU: "Iași", year: 2019, population: 335000},
+            
+            // Constanța
+            {city: "Constanța", cityHU: "Konstanca", year: 2010, population: 304000},
+            {city: "Constanța", cityHU: "Konstanca", year: 2011, population: 303000},
+            {city: "Constanța", cityHU: "Konstanca", year: 2012, population: 302000},
+            {city: "Constanța", cityHU: "Konstanca", year: 2013, population: 300000},
+            {city: "Constanța", cityHU: "Konstanca", year: 2014, population: 298000},
+            {city: "Constanța", cityHU: "Konstanca", year: 2015, population: 296000},
+            {city: "Constanța", cityHU: "Konstanca", year: 2016, population: 294000},
+            {city: "Constanța", cityHU: "Konstanca", year: 2017, population: 292000},
+            {city: "Constanța", cityHU: "Konstanca", year: 2018, population: 290000},
+            {city: "Constanța", cityHU: "Konstanca", year: 2019, population: 288000},
+            
+            // Brașov
+            {city: "Brașov", cityHU: "Brassó", year: 2010, population: 284000},
+            {city: "Brașov", cityHU: "Brassó", year: 2011, population: 283500},
+            {city: "Brașov", cityHU: "Brassó", year: 2012, population: 283000},
+            {city: "Brașov", cityHU: "Brassó", year: 2013, population: 282000},
+            {city: "Brașov", cityHU: "Brassó", year: 2014, population: 281000},
+            {city: "Brașov", cityHU: "Brassó", year: 2015, population: 280000},
+            {city: "Brașov", cityHU: "Brassó", year: 2016, population: 279000},
+            {city: "Brașov", cityHU: "Brassó", year: 2017, population: 278000},
+            {city: "Brașov", cityHU: "Brassó", year: 2018, population: 277000},
+            {city: "Brașov", cityHU: "Brassó", year: 2019, population: 276000}
+        ];
+        
+        // Calculate growth data for bar chart
+        const growthData = [
+            {city: "Bucharest", cityHU: "Bukarest", change: -8.7, population2010: 1883000, population2019: 1720000},
+            {city: "Cluj-Napoca", cityHU: "Kolozsvár", change: 9.2, population2010: 324000, population2019: 354000},
+            {city: "Timișoara", cityHU: "Temesvár", change: -3.2, population2010: 319000, population2019: 309000},
+            {city: "Iași", cityHU: "Iași", change: -1.4, population2010: 340000, population2019: 335000},
+            {city: "Constanța", cityHU: "Konstanca", change: -5.1, population2010: 304000, population2019: 288000},
+            {city: "Brașov", cityHU: "Brassó", change: -2.8, population2010: 284000, population2019: 276000}
+        ];
+        
+        let currentLang = window.SiteLanguage.getCurrentLanguage();
+
+        const cityMap = {
+            en: {
+                "Bucharest": "Bucharest",
+                "Cluj-Napoca": "Cluj-Napoca",
+                "Timișoara": "Timișoara",
+                "Iași": "Iași",
+                "Constanța": "Constanța",
+                "Brașov": "Brașov"
+            },
+            hu: {
+                "Bucharest": "Bukarest",
+                "Cluj-Napoca": "Kolozsvár",
+                "Timișoara": "Temesvár",
+                "Iași": "Iași",
+                "Constanța": "Konstanca",
+                "Brașov": "Brassó"
+            },
+            ro: {
+                "Bucharest": "București",
+                "Cluj-Napoca": "Cluj-Napoca",
+                "Timișoara": "Timișoara",
+                "Iași": "Iași",
+                "Constanța": "Constanța",
+                "Brașov": "Brașov"
+            }
+        };
+        
+        function getDataForLang(data) {
+            return data.map(d => ({
+                ...d,
+                city: cityMap[currentLang][d.city] || d.city
+            }));
+        }
+        
+        function updateCharts() {
+            const currentData = getDataForLang(populationData);
+            const currentGrowthData = getDataForLang(growthData);
+            
+            const lineChartSpec = {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                "width": 600,
+                "height": 350,
+                "title": {
+                    "text": currentLang === 'hu' ? "Népességi trendek városonként (2010-2019)" : currentLang === 'ro' ? "Tendințele populației pe orașe (2010-2019)" : "Population Trends by City (2010-2019)",
+                    "fontSize": 16,
+                    "font": "Merriweather"
+                },
+                "data": {"values": currentData},
+                "mark": {
+                    "type": "line",
+                    "point": {"size": 60, "filled": true},
+                    "strokeWidth": 2.5,
+                    "opacity": 0.9
+                },
+                "encoding": {
+                    "x": {
+                        "field": "year",
+                        "type": "quantitative",
+                        "title": currentLang === 'hu' ? "Év" : currentLang === 'ro' ? "An" : "Year",
+                        "axis": {"format": "d", "labelAngle": 0}
+                    },
+                    "y": {
+                        "field": "population",
+                        "type": "quantitative",
+                        "title": currentLang === 'hu' ? "Népesség" : currentLang === 'ro' ? "Populație" : "Population",
+                        "axis": {"format": ",d"}
+                    },
+                    "color": {
+                        "field": "city",
+                        "type": "nominal",
+                        "title": currentLang === 'hu' ? "Város" : currentLang === 'ro' ? "Oraș" : "City",
+                        "scale": {
+                            "domain": [
+                                cityMap[currentLang]["Bucharest"],
+                                cityMap[currentLang]["Cluj-Napoca"],
+                                cityMap[currentLang]["Timișoara"],
+                                cityMap[currentLang]["Iași"],
+                                cityMap[currentLang]["Constanța"],
+                                cityMap[currentLang]["Brașov"]
+                            ],
+                            "range": ["#e53e3e", "#38a169", "#3182ce", "#805ad5", "#d69e2e", "#dd6b20"]
+                        }
+                    },
+                    "tooltip": [
+                        {"field": "city", "type": "nominal", "title": currentLang === 'hu' ? "Város" : currentLang === 'ro' ? "Oraș" : "City"},
+                        {"field": "year", "type": "quantitative", "title": currentLang === 'hu' ? "Év" : currentLang === 'ro' ? "An" : "Year"},
+                        {"field": "population", "type": "quantitative", "title": currentLang === 'hu' ? "Népesség" : currentLang === 'ro' ? "Populație" : "Population", "format": ",d"}
+                    ]
+                },
+                "config": {
+                    "view": {"stroke": null},
+                    "axis": {"grid": true, "gridOpacity": 0.3},
+                    "legend": {"orient": "top", "columns": 3}
+                }
+            };
+            
+            const barChartSpec = {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                "width": 500,
+                "height": 300,
+                "title": {
+                    "text": currentLang === 'hu' ? "Népességváltozás (%) 2010-2019" : currentLang === 'ro' ? "Schimbarea populației (%) 2010-2019" : "Population Change (%) 2010-2019",
+                    "fontSize": 16,
+                    "font": "Merriweather"
+                },
+                "data": {"values": currentGrowthData},
+                "mark": {
+                    "type": "bar",
+                    "cornerRadiusEnd": 4,
+                    "stroke": "#333",
+                    "strokeWidth": 1
+                },
+                "encoding": {
+                    "x": {
+                        "field": "city",
+                        "type": "nominal",
+                        "title": currentLang === 'hu' ? "Város" : currentLang === 'ro' ? "Oraș" : "City",
+                        "sort": "-y"
+                    },
+                    "y": {
+                        "field": "change",
+                        "type": "quantitative",
+                        "title": currentLang === 'hu' ? "Népességváltozás (%)" : currentLang === 'ro' ? "Schimbarea populației (%)" : "Population Change (%)"
+                    },
+                    "color": {
+                        "field": "change",
+                        "type": "quantitative",
+                        "scale": {
+                            "domain": [-10, 0, 10],
+                            "range": ["#c53030", "#e2e8f0", "#38a169"]
+                        },
+                        "legend": {"title": currentLang === 'hu' ? "Változás %" : currentLang === 'ro' ? "Schimbare %" : "Change %"}
+                    },
+                    "tooltip": [
+                        {"field": "city", "type": "nominal", "title": currentLang === 'hu' ? "Város" : currentLang === 'ro' ? "Oraș" : "City"},
+                        {"field": "population2010", "type": "quantitative", "title": currentLang === 'hu' ? "Nép. 2010" : currentLang === 'ro' ? "Pop. 2010" : "Pop. 2010", "format": ",d"},
+                        {"field": "population2019", "type": "quantitative", "title": currentLang === 'hu' ? "Nép. 2019" : currentLang === 'ro' ? "Pop. 2019" : "Pop. 2019", "format": ",d"},
+                        {"field": "change", "type": "quantitative", "title": currentLang === 'hu' ? "Változás %" : currentLang === 'ro' ? "Schimbare %" : "Change %", "format": ".1f"}
+                    ]
+                },
+                "config": {
+                    "view": {"stroke": null},
+                    "axis": {"grid": true, "gridOpacity": 0.3}
+                }
+            };
+            
+            const tableSpec = {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                "width": 600,
+                "height": 250,
+                "title": {
+                    "text": currentLang === 'hu' ? "Városi népességi statisztikák" : currentLang === 'ro' ? "Statistici ale populației urbane" : "City Population Statistics",
+                    "fontSize": 16,
+                    "font": "Merriweather"
+                },
+                "data": {"values": currentGrowthData},
+                "mark": {
+                    "type": "text",
+                    "align": "center",
+                    "baseline": "middle",
+                    "fontSize": 12
+                },
+                "encoding": {
+                    "x": {
+                        "field": "city",
+                        "type": "nominal",
+                        "title": currentLang === 'hu' ? "Város" : currentLang === 'ro' ? "Oraș" : "City",
+                        "header": {"title": currentLang === 'hu' ? "Város" : currentLang === 'ro' ? "Oraș" : "City", "fontSize": 14, "fontWeight": "bold"}
+                    },
+                    "y": {
+                        "field": "population2010",
+                        "type": "quantitative",
+                        "title": currentLang === 'hu' ? "Népesség 2010" : currentLang === 'ro' ? "Populație 2010" : "Population 2010",
+                        "header": {"title": "2010", "fontSize": 14, "fontWeight": "bold"},
+                        "axis": {"format": ",d"}
+                    },
+                    "color": {
+                        "condition": {
+                            "test": "datum.change > 0",
+                            "value": "#38a169"
+                        },
+                        "value": "#c53030"
+                    },
+                    "text": {
+                        "field": "population2010",
+                        "type": "quantitative",
+                        "format": ",d"
+                    }
+                },
+                "config": {
+                    "view": {"stroke": null}
+                }
+            };
+            
+            vegaEmbed('#line-chart', lineChartSpec);
+            vegaEmbed('#bar-chart', barChartSpec);
+            vegaEmbed('#table-chart', tableSpec);
+        }
+        
+        function updateTextContent() {
+            document.querySelectorAll('[data-en][data-hu][data-ro]').forEach(el => {
+                el.innerHTML = el.getAttribute(`data-${currentLang}`);
+            });
+            
+            document.querySelectorAll('.stat-card .city').forEach(el => {
+                const enName = el.getAttribute('data-en');
+                if (cityMap[enName]) {
+                    el.textContent = cityMap[currentLang][enName];
+                }
+            });
+            
+            document.title = currentLang === 'hu' 
+                ? "Románia városai: Népességváltozás egy évtized alatt (2010-2019)"
+                : currentLang === 'ro'
+                    ? "Orașele României: un deceniu de schimbare a populației (2010-2019)"
+                    : "Romanian Cities: A Decade of Population Change (2010-2019)";
+        }
+        
+        function switchLanguage(lang) {
+            currentLang = lang;
+            updateTextContent();
+            updateCharts();
+        }
+
+        window.addEventListener('site-language-change', (event) => {
+            switchLanguage(event.detail.lang);
+        });
+
+        window.SiteLanguage.initializeLanguageSwitcher();
+        switchLanguage(window.SiteLanguage.getCurrentLanguage());
+    </script>
+</body>
+</html>
