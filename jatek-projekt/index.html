@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Last Ring Arena</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="layout">
+    <section class="sidebar">
+      <p class="eyebrow">Survival Arena</p>
+      <h1>Last Ring Arena</h1>
+      <p class="intro">
+        Tuleld tul az arena egyre gyorsulo rohamait. Mozogj, huzd az idot, es verd meg a sajat rekordodat.
+      </p>
+
+      <div class="theme-card">
+        <h2>Temak</h2>
+        <div class="theme-switcher">
+          <button class="theme-button active" type="button" data-theme="neon">Neon Arena</button>
+          <button class="theme-button" type="button" data-theme="battlefield">Battlefield</button>
+        </div>
+        <p id="theme-description">
+          Az eredeti neon sci-fi arena csillagmezos hangulattal es tiszta futurisztikus formakkal.
+        </p>
+      </div>
+
+      <div class="player-card">
+        <h2>Jatekos</h2>
+        <label class="field-label" for="player-name-input">Nev a leaderboardhoz</label>
+        <input id="player-name-input" class="player-input" type="text" maxlength="16" placeholder="Peldaul: Robi">
+      </div>
+
+      <div class="hud-card">
+        <div class="stat-row">
+          <span>Ido</span>
+          <strong id="time-value">0.0 mp</strong>
+        </div>
+        <div class="stat-row">
+          <span>Pont</span>
+          <strong id="score-value">0</strong>
+        </div>
+        <div class="stat-row">
+          <span>Elet</span>
+          <strong id="health-value">100</strong>
+        </div>
+        <div class="stat-row">
+          <span>Szint</span>
+          <strong id="level-value">1</strong>
+        </div>
+        <div class="stat-row">
+          <span>Hullam</span>
+          <strong id="wave-value">1</strong>
+        </div>
+        <div class="stat-row">
+          <span>XP</span>
+          <strong id="xp-value">0 / 5</strong>
+        </div>
+        <div class="stat-row">
+          <span>Legjobb</span>
+          <strong id="best-value">0</strong>
+        </div>
+      </div>
+
+      <div class="controls-card">
+        <h2>Irayitas</h2>
+        <p>WASD vagy nyilak a mozgasra.</p>
+        <p>Az automata fegyver a legkozelebbi ellenfelet lovi.</p>
+        <p>Gyujts XP shardokat a szintlepeshez es valassz fejlesztest.</p>
+        <a class="back-link" href="../index.html">Vissza a homepage-re</a>
+        <button id="start-button" type="button">Jatek inditasa</button>
+        <p id="status-text">Nyomd meg a gombot, es indul az elso kor.</p>
+      </div>
+
+      <div class="leaderboard-card">
+        <div class="leaderboard-header">
+          <h2>Leaderboard</h2>
+          <span id="leaderboard-count">Top 0</span>
+        </div>
+        <div id="leaderboard-list" class="leaderboard-list"></div>
+      </div>
+    </section>
+
+    <section class="arena-panel">
+      <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+      <canvas id="game-canvas" width="900" height="600" aria-label="Jatek arena"></canvas>
+      <div class="overlay hidden" id="game-overlay">
+        <p class="overlay-label">Kor vege</p>
+        <h2 id="overlay-title">Ujra?</h2>
+        <p id="overlay-copy">Egy ujabb probalkozassal meg jobb idot futhatsz.</p>
+        <div class="overlay-actions" id="overlay-actions"></div>
+        <button id="restart-button" type="button">Ujrainditas</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

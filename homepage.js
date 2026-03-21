@@ -3,7 +3,7 @@ const context = canvas.getContext("2d");
 const homepageTranslations = {
   hu: {
     title: "Szakács Róbert | GitHub Homepage",
-    nav: ["Rólam", "Projektek", "Elérés"],
+    nav: ["Rólam", "Projektek", "Játék", "Elérés"],
     eyebrow: "GitHub Homepage",
     heroTitle: "Szakács Róbert vagyok.",
     heroLead:
@@ -28,6 +28,16 @@ const homepageTranslations = {
       "Egy korábbi adatvizualizációs projekt, amely a romániai városok népességváltozását mutatja be 2010 és 2019 között."
     ],
     projectButtons: ["Megnyitás", "Megnyitás"],
+    gameEyebrow: "Játék",
+    gameTitle: "Last Ring Arena",
+    gameLead:
+      "Egy saját survival arena projektem, ahol a játékos egyre nehezebb hullámok ellen próbál minél tovább életben maradni. Folyamatos fejlesztésekkel, témaválasztóval és ranglistával épül tovább.",
+    gameFeatures: [
+      "Neon Arena és Battlefield témák",
+      "Hullámrendszer, fejlesztések és leaderboard",
+      "Nyitottabb mozgástér kamerakövetéssel"
+    ],
+    gameButton: "Játék megnyitása",
     contactEyebrow: "Elérés",
     contactTitle: "Ez az oldal a saját GitHub kezdőlapom alapja",
     contactText:
@@ -36,7 +46,7 @@ const homepageTranslations = {
   },
   en: {
     title: "Róbert Szakács | GitHub Homepage",
-    nav: ["About", "Projects", "Contact"],
+    nav: ["About", "Projects", "Game", "Contact"],
     eyebrow: "GitHub Homepage",
     heroTitle: "I'm Róbert Szakács.",
     heroLead:
@@ -61,6 +71,16 @@ const homepageTranslations = {
       "An earlier data visualization project showing population change in Romanian cities between 2010 and 2019."
     ],
     projectButtons: ["Open", "Open"],
+    gameEyebrow: "Game",
+    gameTitle: "Last Ring Arena",
+    gameLead:
+      "A survival arena project of my own where the player tries to survive increasingly difficult waves for as long as possible. It keeps expanding with upgrades, theme switching, and a leaderboard.",
+    gameFeatures: [
+      "Neon Arena and Battlefield themes",
+      "Wave system, upgrades, and leaderboard",
+      "More open movement space with camera follow"
+    ],
+    gameButton: "Open game",
     contactEyebrow: "Contact",
     contactTitle: "This page is the basis of my GitHub homepage",
     contactText:
@@ -69,7 +89,7 @@ const homepageTranslations = {
   },
   ro: {
     title: "Róbert Szakács | Pagina GitHub",
-    nav: ["Despre mine", "Proiecte", "Contact"],
+    nav: ["Despre mine", "Proiecte", "Joc", "Contact"],
     eyebrow: "Pagina GitHub",
     heroTitle: "Sunt Róbert Szakács.",
     heroLead:
@@ -94,6 +114,16 @@ const homepageTranslations = {
       "Un proiect anterior de vizualizare a datelor care prezintă schimbarea populației în orașele din România între 2010 și 2019."
     ],
     projectButtons: ["Deschide", "Deschide"],
+    gameEyebrow: "Joc",
+    gameTitle: "Last Ring Arena",
+    gameLead:
+      "Un proiect survival arena propriu, unde jucătorul încearcă să supraviețuiască valurilor din ce în ce mai dificile cât mai mult timp. Proiectul se dezvoltă în continuare cu upgrade-uri, teme și leaderboard.",
+    gameFeatures: [
+      "Teme Neon Arena și Battlefield",
+      "Sistem de valuri, upgrade-uri și leaderboard",
+      "Spațiu de mișcare mai deschis cu cameră care urmărește jucătorul"
+    ],
+    gameButton: "Deschide jocul",
     contactEyebrow: "Contact",
     contactTitle: "Această pagină este baza homepage-ului meu GitHub",
     contactText:
@@ -236,8 +266,10 @@ const applyHomepageLanguage = (lang) => {
   sectionHeadings[0].querySelector("h2").textContent = copy.aboutTitle;
   sectionHeadings[1].querySelector(".eyebrow").textContent = copy.projectsEyebrow;
   sectionHeadings[1].querySelector("h2").textContent = copy.projectsTitle;
-  sectionHeadings[2].querySelector(".eyebrow").textContent = copy.contactEyebrow;
-  sectionHeadings[2].querySelector("h2").textContent = copy.contactTitle;
+  sectionHeadings[2].querySelector(".eyebrow").textContent = copy.gameEyebrow;
+  sectionHeadings[2].querySelector("h2").textContent = copy.gameTitle;
+  sectionHeadings[3].querySelector(".eyebrow").textContent = copy.contactEyebrow;
+  sectionHeadings[3].querySelector("h2").textContent = copy.contactTitle;
 
   document.querySelectorAll(".about-card").forEach((card, index) => {
     card.querySelector("h3").textContent = copy.aboutCards[index][0];
@@ -249,6 +281,12 @@ const applyHomepageLanguage = (lang) => {
     card.querySelector("p").textContent = copy.projectDescriptions[index];
     card.querySelector(".button").textContent = copy.projectButtons[index];
   });
+
+  document.querySelector(".game-copy .game-lead").textContent = copy.gameLead;
+  document.querySelectorAll(".game-feature-list li").forEach((item, index) => {
+    item.textContent = copy.gameFeatures[index];
+  });
+  document.querySelector(".game-copy .button").textContent = copy.gameButton;
 
   document.querySelector(".contact-text").textContent = copy.contactText;
   document.querySelectorAll(".site-footer p").forEach((paragraph, index) => {
