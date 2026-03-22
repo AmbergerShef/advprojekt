@@ -12,29 +12,34 @@
       <p class="eyebrow">Survival Arena</p>
       <h1>Last Ring Arena</h1>
       <p class="intro">
-        Tuleld tul az arena egyre gyorsulo rohamait. Mozogj, huzd az idot, es verd meg a sajat rekordodat.
+        Túléld túl az aréna egyre gyorsuló rohamait. Mozogj, húzd az időt, és verd meg a saját rekordodat.
       </p>
 
+      <div class="language-switcher-game" aria-label="Nyelvválasztó">
+        <button class="lang-game-btn active" type="button" data-lang="hu">HU</button>
+        <button class="lang-game-btn" type="button" data-lang="en">EN</button>
+      </div>
+
       <div class="theme-card">
-        <h2>Temak</h2>
+        <h2>Témák</h2>
         <div class="theme-switcher">
           <button class="theme-button active" type="button" data-theme="neon">Neon Arena</button>
           <button class="theme-button" type="button" data-theme="battlefield">Battlefield</button>
         </div>
         <p id="theme-description">
-          Az eredeti neon sci-fi arena csillagmezos hangulattal es tiszta futurisztikus formakkal.
+          Az eredeti neon sci-fi aréna csillagmezős hangulattal és tiszta futurisztikus formákkal.
         </p>
       </div>
 
       <div class="player-card">
-        <h2>Jatekos</h2>
-        <label class="field-label" for="player-name-input">Nev a leaderboardhoz</label>
-        <input id="player-name-input" class="player-input" type="text" maxlength="16" placeholder="Peldaul: Robi">
+        <h2>Játékos</h2>
+        <label class="field-label" for="player-name-input">Név a leaderboardhoz</label>
+        <input id="player-name-input" class="player-input" type="text" maxlength="16" placeholder="Például: Robi">
       </div>
 
       <div class="hud-card">
         <div class="stat-row">
-          <span>Ido</span>
+          <span>Idő</span>
           <strong id="time-value">0.0 mp</strong>
         </div>
         <div class="stat-row">
@@ -42,7 +47,7 @@
           <strong id="score-value">0</strong>
         </div>
         <div class="stat-row">
-          <span>Elet</span>
+          <span>Élet</span>
           <strong id="health-value">100</strong>
         </div>
         <div class="stat-row">
@@ -50,7 +55,7 @@
           <strong id="level-value">1</strong>
         </div>
         <div class="stat-row">
-          <span>Hullam</span>
+          <span>Hullám</span>
           <strong id="wave-value">1</strong>
         </div>
         <div class="stat-row">
@@ -64,13 +69,14 @@
       </div>
 
       <div class="controls-card">
-        <h2>Irayitas</h2>
-        <p>WASD vagy nyilak a mozgasra.</p>
-        <p>Az automata fegyver a legkozelebbi ellenfelet lovi.</p>
-        <p>Gyujts XP shardokat a szintlepeshez es valassz fejlesztest.</p>
+        <h2>Irányítás</h2>
+        <p>WASD vagy nyilak a mozgásra.</p>
+        <p>Az automata fegyver a legközelebbi ellenfelet lövi.</p>
+        <p>Space: dash | Shift: shockwave képesség</p>
+        <p>Gyűjts XP shardokat a szintlépéshez és válassz fejlesztést.</p>
         <a class="back-link" href="../index.html">Vissza a homepage-re</a>
-        <button id="start-button" type="button">Jatek inditasa</button>
-        <p id="status-text">Nyomd meg a gombot, es indul az elso kor.</p>
+        <button id="start-button" type="button">Játék indítása</button>
+        <p id="status-text">Nyomd meg a gombot, és indul az első kör.</p>
       </div>
 
       <div class="leaderboard-card">
@@ -84,13 +90,13 @@
 
     <section class="arena-panel">
       <canvas id="starfield-canvas" aria-hidden="true"></canvas>
-      <canvas id="game-canvas" width="900" height="600" aria-label="Jatek arena"></canvas>
+      <canvas id="game-canvas" width="900" height="600" aria-label="Játék aréna"></canvas>
       <div class="overlay hidden" id="game-overlay">
-        <p class="overlay-label">Kor vege</p>
-        <h2 id="overlay-title">Ujra?</h2>
-        <p id="overlay-copy">Egy ujabb probalkozassal meg jobb idot futhatsz.</p>
+        <p class="overlay-label">Kör vége</p>
+        <h2 id="overlay-title">Újra?</h2>
+        <p id="overlay-copy">Egy újabb próbálkozással még jobb időt futhatsz.</p>
         <div class="overlay-actions" id="overlay-actions"></div>
-        <button id="restart-button" type="button">Ujrainditas</button>
+        <button id="restart-button" type="button">Újraindítás</button>
       </div>
     </section>
   </main>

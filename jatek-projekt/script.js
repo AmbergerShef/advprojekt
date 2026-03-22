@@ -12,6 +12,7 @@ const overlayTitle = document.getElementById("overlay-title");
 const overlayCopy = document.getElementById("overlay-copy");
 const overlayActions = document.getElementById("overlay-actions");
 const themeButtons = document.querySelectorAll(".theme-button");
+const languageButtons = document.querySelectorAll(".lang-game-btn");
 const themeDescription = document.getElementById("theme-description");
 const playerNameInput = document.getElementById("player-name-input");
 const leaderboardList = document.getElementById("leaderboard-list");
@@ -43,7 +44,8 @@ const STARFIELD = {
 
 const STAR_COUNT = 70;
 const MAX_LINK_DISTANCE = 140;
-const BULLET_RANGE = 430;
+const BULLET_RANGE = 300;
+const BOSS_WAVE_INTERVAL = 4;
 const THEMES = {
   neon: {
     description: "Az eredeti neon sci-fi arena csillagmezos hangulattal es tiszta futurisztikus formakkal.",
@@ -120,33 +122,33 @@ const ENEMY_ARCHETYPES = [
     cost: 1,
     color: 16,
     radius: [15, 22],
-    speed: [88, 118],
-    health: [18, 28],
-    damage: 12,
+    speed: [108, 138],
+    health: [24, 34],
+    damage: 14,
     xp: 1,
   },
   {
     id: "sprinter",
-    minWave: 3,
-    weight: 0.8,
+    minWave: 2,
+    weight: 1,
     cost: 2,
     color: 348,
     radius: [11, 15],
-    speed: [145, 182],
-    health: [10, 16],
-    damage: 9,
+    speed: [170, 205],
+    health: [12, 18],
+    damage: 10,
     xp: 1,
   },
   {
     id: "brute",
-    minWave: 5,
-    weight: 0.55,
+    minWave: 4,
+    weight: 0.75,
     cost: 4,
     color: 44,
     radius: [24, 32],
-    speed: [62, 84],
-    health: [42, 60],
-    damage: 18,
+    speed: [80, 102],
+    health: [48, 68],
+    damage: 22,
     xp: 3,
   },
 ];
@@ -155,10 +157,166 @@ const keys = new Set();
 const bestScoreKey = "last-ring-arena-best";
 const leaderboardKey = "last-ring-arena-leaderboard";
 const playerNameKey = "last-ring-arena-player-name";
+const gameLanguageKey = "last-ring-arena-language";
 
 let lastTimestamp = 0;
 let state = createInitialState();
 let currentTheme = "neon";
+let currentLanguage = localStorage.getItem(gameLanguageKey) || "hu";
+let resizeFrame = 0;
+
+const GAME_COPY = {
+  hu: {
+    locale: "hu",
+    pageLang: "hu",
+    intro:
+      "Túléld túl az aréna egyre gyorsuló rohamait. Mozogj, húzd az időt, és verd meg a saját rekordodat.",
+    themeTitle: "Témák",
+    playerTitle: "Játékos",
+    playerLabel: "Név a leaderboardhoz",
+    playerPlaceholder: "Például: Robi",
+    stats: ["Idő", "Pont", "Élet", "Szint", "Hullám", "XP", "Legjobb"],
+    controlsTitle: "Irányítás",
+    controlsMove: "WASD vagy nyilak a mozgásra.",
+    controlsAuto: "Az automata fegyver a legközelebbi ellenfelet lövi.",
+    controlsSkills: "Space: dash | Shift: shockwave képesség",
+    controlsUpgrades: "Gyűjts XP shardokat a szintlépéshez és válassz fejlesztést.",
+    backHome: "Vissza a homepage-re",
+    startGame: "Játék indítása",
+    leaderboard: "Leaderboard",
+    topCount: (count) => `Top ${count}`,
+    leaderboardEmpty: "Még nincs mentés a toplistán. Indíts egy kört és kerülj fel.",
+    leaderboardMeta: (elapsed, kills) => `${elapsed.toFixed(1)} mp • ${kills} kill`,
+    defaultPlayer: "Játékos",
+    overlayEnd: "Kör vége",
+    overlayRestart: "Újra?",
+    overlayRetryCopy: "Egy újabb próbálkozással még jobb időt futhatsz.",
+    restart: "Újraindítás",
+    pause: "Szünet",
+    pausedTitle: "Játék megállítva",
+    pausedCopy: "Válassz, hogyan szeretnéd folytatni ezt a menetet.",
+    continue: "Folytatás",
+    endGame: "Játék vége",
+    pausedStatus: "A játék szünetel. Esc-re vagy a gombra folytathatod.",
+    resumedStatus: (wave) => `A játék folytatódott. Hullám ${wave}.`,
+    upgrade: "Fejlesztés",
+    upgradeCopy: "Válassz egy fejlesztést. A kör csak ezután folytatódik.",
+    upgradeStatus: "Szintlépés! Válassz egy fejlesztést az aréna folytatásához.",
+    upgradeApplied: (name) => `${name} aktív.`,
+    initialStatus: "Túléld minél tovább. Lőj, gyűjts XP-t, és fejlődj menet közben.",
+    startedStatus: (wave) => `A kör elindult. Hullám ${wave}, tartsd mozgásban a hősöd.`,
+    waveStart: (wave, interval) => `Hullám ${wave} elindult. A boss minden ${interval}. hullámban érkezik.`,
+    bossStart: (wave) => `Bossfight indul a ${wave}. hullámban. Készítsd a képességeidet.`,
+    waveBreak: (wave) => `Hullám ${wave} tisztítva. Rögtön jön a következő kör.`,
+    waveFinal: (wave) => `Hullám ${wave} végfázis. Tisztítsd le a maradék ellenfeleket.`,
+    gameOverTitle: (score) => `Vége! Pontszám: ${score}`,
+    gameOverCopy: (elapsed, kills) =>
+      `Túlélt idő: ${elapsed.toFixed(1)} mp, kiütött ellenfelek: ${kills}. Új körben próbáld más fejlesztésekkel.`,
+    gameOverStatus: "A kör véget ért. Újraindítással mehetsz tovább.",
+    dashStatus: "Dash aktív. Használd a mozgást a következő nyomás előtt.",
+    shockwaveHit: "Shockwave elsült. Szétszórtad a közeledben lévő fenyegetéseket.",
+    shockwaveMiss: "Shockwave elsült. Most maradj mozgásban.",
+    bossDefeated: (wave) => `A boss elesett a ${wave}. hullámban. Készítsd magad a folytatásra.`,
+    bossHit: "A boss talált. Mozgásban maradj, és használd a dash-t.",
+    themeNeonStatus: "Neon Arena téma aktív. Visszatért a futurisztikus csillagmező.",
+    themeBattlefieldStatus: "Battlefield téma aktív. Katona, drón és tank ellenfelek várnak.",
+    overlayBossHp: (health, maxHealth) => `Boss HP: ${Math.ceil(health)} / ${maxHealth}`,
+    hudLevel: (level) => `Szint ${level}`,
+    hudWeapon: (shots, damage) => `Lövések: ${shots} | Sebzés: ${damage}`,
+    hudSkills: (dash, shockwave) => `Dash: ${dash.toFixed(1)} | Shockwave: ${shockwave.toFixed(1)}`,
+    startPromptTitle: "Nyomd meg a Játék indítása gombot",
+    startPromptCopy: "Mozgás: WASD vagy nyilak | Tüzelés: automatikus",
+    breakTitle: (wave) => `Hullám ${wave} vége`,
+    breakCopy: (seconds) => `Következő hullám: ${seconds.toFixed(1)} mp`,
+    themeDescriptions: {
+      neon: "Az eredeti neon sci-fi aréna csillagmezős hangulattal és tiszta futurisztikus formákkal.",
+      battlefield: "Hangulatos harcmező katonával, drónokkal és tank jellegű ellenfelekkel. Minél erősebb az ellenfél, annál komolyabb a sziluettje.",
+    },
+    upgradeTexts: {
+      "rapid-fire": ["Gyorsabb tüzelés", "A fegyver gyakrabban lövi a legközelebbi célpontot."],
+      "bullet-damage": ["Nagyobb sebzés", "A lövedékek erősebbet ütnek és gyorsabban takarítanak."],
+      "move-speed": ["Gyorsabb mozgás", "Könnyebb kite-olni a hullámokat és kimenekülni a sarokból."],
+      "max-health": ["Páncéljavítás", "Nő a maximum életerő és kapsz azonnali gyógyulást is."],
+      "multi-shot": ["Dupla lövedék", "Egy lövésnél több lövedék indul enyhe szórással."],
+      "pickup-range": ["XP mágnes", "Messzebbről magadhoz húzod az XP shardokat."],
+    },
+  },
+  en: {
+    locale: "en",
+    pageLang: "en",
+    intro:
+      "Survive the arena's increasingly fast assaults. Keep moving, buy time, and beat your own record.",
+    themeTitle: "Themes",
+    playerTitle: "Player",
+    playerLabel: "Name for the leaderboard",
+    playerPlaceholder: "For example: Robi",
+    stats: ["Time", "Score", "Health", "Level", "Wave", "XP", "Best"],
+    controlsTitle: "Controls",
+    controlsMove: "Use WASD or the arrow keys to move.",
+    controlsAuto: "Your automatic weapon targets the nearest enemy.",
+    controlsSkills: "Space: dash | Shift: shockwave ability",
+    controlsUpgrades: "Collect XP shards to level up and choose upgrades.",
+    backHome: "Back to homepage",
+    startGame: "Start game",
+    leaderboard: "Leaderboard",
+    topCount: (count) => `Top ${count}`,
+    leaderboardEmpty: "No leaderboard run saved yet. Start a match and claim a spot.",
+    leaderboardMeta: (elapsed, kills) => `${elapsed.toFixed(1)} s • ${kills} kills`,
+    defaultPlayer: "Player",
+    overlayEnd: "Run Over",
+    overlayRestart: "Again?",
+    overlayRetryCopy: "Another attempt might take you even farther.",
+    restart: "Restart",
+    pause: "Pause",
+    pausedTitle: "Game paused",
+    pausedCopy: "Choose how you want to continue this run.",
+    continue: "Continue",
+    endGame: "End game",
+    pausedStatus: "The game is paused. Press Esc or use the button to continue.",
+    resumedStatus: (wave) => `The game resumed. Wave ${wave}.`,
+    upgrade: "Upgrade",
+    upgradeCopy: "Choose an upgrade. The run continues right after that.",
+    upgradeStatus: "Level up! Pick an upgrade to continue the arena run.",
+    upgradeApplied: (name) => `${name} is active.`,
+    initialStatus: "Survive as long as you can. Shoot, collect XP, and grow stronger during the run.",
+    startedStatus: (wave) => `The run has started. Wave ${wave}, keep your hero moving.`,
+    waveStart: (wave, interval) => `Wave ${wave} has started. A boss arrives every ${interval} waves.`,
+    bossStart: (wave) => `Boss fight begins in wave ${wave}. Get your abilities ready.`,
+    waveBreak: (wave) => `Wave ${wave} cleared. The next round is coming right up.`,
+    waveFinal: (wave) => `Wave ${wave} final phase. Clear the remaining enemies.`,
+    gameOverTitle: (score) => `Game over! Score: ${score}`,
+    gameOverCopy: (elapsed, kills) =>
+      `Survived for ${elapsed.toFixed(1)} s and defeated ${kills} enemies. Try a different upgrade path next run.`,
+    gameOverStatus: "The run has ended. Restart to go again.",
+    dashStatus: "Dash activated. Use movement before the next pressure spike.",
+    shockwaveHit: "Shockwave fired. You scattered the threats around you.",
+    shockwaveMiss: "Shockwave fired. Stay on the move now.",
+    bossDefeated: (wave) => `The boss fell in wave ${wave}. Prepare for what comes next.`,
+    bossHit: "The boss hit you. Keep moving and use dash to escape.",
+    themeNeonStatus: "Neon Arena theme active. The futuristic starfield is back.",
+    themeBattlefieldStatus: "Battlefield theme active. Soldiers, drones, and tank enemies await.",
+    overlayBossHp: (health, maxHealth) => `Boss HP: ${Math.ceil(health)} / ${maxHealth}`,
+    hudLevel: (level) => `Level ${level}`,
+    hudWeapon: (shots, damage) => `Shots: ${shots} | Damage: ${damage}`,
+    hudSkills: (dash, shockwave) => `Dash: ${dash.toFixed(1)} | Shockwave: ${shockwave.toFixed(1)}`,
+    startPromptTitle: "Press the Start Game button",
+    startPromptCopy: "Move: WASD or arrows | Firing: automatic",
+    breakTitle: (wave) => `Wave ${wave} cleared`,
+    breakCopy: (seconds) => `Next wave in: ${seconds.toFixed(1)} s`,
+    themeDescriptions: {
+      neon: "The original neon sci-fi arena with a starfield mood and clean futuristic shapes.",
+      battlefield: "A moody battlefield with a soldier, drones, and tank-like enemies. The stronger the enemy, the more imposing the silhouette.",
+    },
+    upgradeTexts: {
+      "rapid-fire": ["Faster fire", "Your weapon shoots the nearest target more often."],
+      "bullet-damage": ["Higher damage", "Bullets hit harder and clear space faster."],
+      "move-speed": ["Faster movement", "Makes it easier to kite waves and escape corners."],
+      "max-health": ["Armor repair", "Raises maximum health and grants an instant heal."],
+      "multi-shot": ["Multi-shot", "Each attack fires more projectiles with a slight spread."],
+      "pickup-range": ["XP magnet", "You pull XP shards toward yourself from farther away."],
+    },
+  },
+};
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -168,10 +326,24 @@ function randomBetween(min, max) {
   return min + Math.random() * (max - min);
 }
 
+function copyValue(key, ...args) {
+  const value = GAME_COPY[currentLanguage][key];
+  return typeof value === "function" ? value(...args) : value;
+}
+
+function themeDescriptionFor(themeId) {
+  return GAME_COPY[currentLanguage].themeDescriptions[themeId];
+}
+
+function upgradeTextFor(optionId, index) {
+  return GAME_COPY[currentLanguage].upgradeTexts[optionId][index];
+}
+
 function createInitialState() {
   return {
     running: false,
     gameOver: false,
+    paused: false,
     upgradeMode: false,
     elapsed: 0,
     score: 0,
@@ -180,8 +352,10 @@ function createInitialState() {
     enemyDamageCooldown: 0,
     enemies: [],
     bullets: [],
+    enemyProjectiles: [],
     xpOrbs: [],
     particles: [],
+    boss: null,
     camera: {
       x: 0,
       y: 0,
@@ -196,6 +370,8 @@ function createInitialState() {
       maxConcurrent: 6,
       breakTimer: 0,
       inBreak: false,
+      isBossWave: false,
+      bossSpawned: false,
     },
     player: {
       x: 0,
@@ -204,13 +380,16 @@ function createInitialState() {
       speed: 285,
       health: 100,
       maxHealth: 100,
-      bulletDamage: 18,
+      bulletDamage: 12,
       bulletSpeed: 520,
       bulletRadius: 5,
-      fireInterval: 0.48,
+      fireInterval: 0.7,
       fireCooldown: 0.2,
       multishot: 1,
       pickupRadius: 64,
+      dashCooldown: 0,
+      shockwaveCooldown: 0,
+      invulnerableTimer: 0,
       level: 1,
       xp: 0,
       xpToNext: 5,
@@ -255,7 +434,7 @@ function setBestScore(score) {
 
 function getPlayerName() {
   const savedName = playerNameInput.value.trim() || localStorage.getItem(playerNameKey) || "";
-  return savedName.slice(0, 16) || "Jatekos";
+  return savedName.slice(0, 16) || copyValue("defaultPlayer");
 }
 
 function savePlayerName() {
@@ -285,11 +464,11 @@ function addLeaderboardEntry(entry) {
 
 function renderLeaderboard() {
   const entries = getLeaderboard();
-  leaderboardCount.textContent = `Top ${entries.length}`;
+  leaderboardCount.textContent = copyValue("topCount", entries.length);
   leaderboardList.innerHTML = "";
 
   if (entries.length === 0) {
-    leaderboardList.innerHTML = '<div class="leaderboard-empty">Meg nincs mentes a toplistan. Indits egy kort es kerulj fel.</div>';
+    leaderboardList.innerHTML = `<div class="leaderboard-empty">${copyValue("leaderboardEmpty")}</div>`;
     return;
   }
 
@@ -300,7 +479,7 @@ function renderLeaderboard() {
       <span class="leaderboard-rank">#${index + 1}</span>
       <div>
         <div class="leaderboard-name">${entry.name}</div>
-        <div class="leaderboard-meta">${entry.elapsed.toFixed(1)} mp • ${entry.kills} kill</div>
+        <div class="leaderboard-meta">${copyValue("leaderboardMeta", entry.elapsed, entry.kills)}</div>
       </div>
       <span class="leaderboard-score">${entry.score}</span>
     `;
@@ -309,7 +488,7 @@ function renderLeaderboard() {
 }
 
 function updateHud() {
-  timeValue.textContent = `${state.elapsed.toFixed(1)} mp`;
+  timeValue.textContent = currentLanguage === "hu" ? `${state.elapsed.toFixed(1)} mp` : `${state.elapsed.toFixed(1)} s`;
   scoreValue.textContent = String(Math.floor(state.score));
   healthValue.textContent = String(Math.max(0, Math.ceil(state.player.health)));
   levelValue.textContent = String(state.player.level);
@@ -325,10 +504,75 @@ function getTheme() {
 function applyTheme(themeId) {
   currentTheme = THEMES[themeId] ? themeId : "neon";
   document.body.dataset.theme = currentTheme;
-  themeDescription.textContent = getTheme().description;
+  themeDescription.textContent = themeDescriptionFor(currentTheme);
   themeButtons.forEach((button) => {
     button.classList.toggle("active", button.dataset.theme === currentTheme);
   });
+}
+
+function applyGameLanguage() {
+  const stats = document.querySelectorAll(".hud-card .stat-row span");
+  const controlsParagraphs = document.querySelectorAll(".controls-card p");
+
+  document.documentElement.lang = GAME_COPY[currentLanguage].pageLang;
+  document.querySelector(".intro").textContent = copyValue("intro");
+  document.querySelector(".theme-card h2").textContent = copyValue("themeTitle");
+  document.querySelector(".player-card h2").textContent = copyValue("playerTitle");
+  document.querySelector(".field-label").textContent = copyValue("playerLabel");
+  playerNameInput.placeholder = copyValue("playerPlaceholder");
+  document.querySelector(".controls-card h2").textContent = copyValue("controlsTitle");
+  document.querySelector(".back-link").textContent = copyValue("backHome");
+  startButton.textContent = copyValue("startGame");
+  restartButton.textContent = copyValue("restart");
+  document.querySelector(".leaderboard-header h2").textContent = copyValue("leaderboard");
+  if (state.paused) {
+    clearOverlay();
+    overlayLabel.textContent = copyValue("pause");
+    overlayTitle.textContent = copyValue("pausedTitle");
+    overlayCopy.textContent = copyValue("pausedCopy");
+    overlayActions.appendChild(createOverlayButton(copyValue("continue"), resumeFromPause));
+    overlayActions.appendChild(createOverlayButton(copyValue("restart"), startGame));
+    overlayActions.appendChild(createOverlayButton(copyValue("endGame"), endGame));
+  } else if (state.upgradeMode) {
+    clearOverlay();
+    overlayLabel.textContent = copyValue("upgrade");
+    overlayTitle.textContent = copyValue("hudLevel", state.player.level);
+    overlayCopy.textContent = copyValue("upgradeCopy");
+    state.upgradeChoices.forEach((choice) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "upgrade-button";
+      button.innerHTML = `<strong>${upgradeTextFor(choice.id, 0)}</strong><span>${upgradeTextFor(choice.id, 1)}</span>`;
+      button.addEventListener("click", () => applyUpgrade(choice));
+      overlayActions.appendChild(button);
+    });
+  } else if (state.gameOver) {
+    overlayLabel.textContent = copyValue("overlayEnd");
+    overlayTitle.textContent = copyValue("gameOverTitle", Math.floor(state.score));
+    overlayCopy.textContent = copyValue("gameOverCopy", state.elapsed, state.kills);
+    restartButton.textContent = copyValue("restart");
+  } else {
+    overlayLabel.textContent = copyValue("overlayEnd");
+    overlayTitle.textContent = copyValue("overlayRestart");
+    overlayCopy.textContent = copyValue("overlayRetryCopy");
+  }
+
+  stats.forEach((item, index) => {
+    item.textContent = GAME_COPY[currentLanguage].stats[index];
+  });
+
+  controlsParagraphs[0].textContent = copyValue("controlsMove");
+  controlsParagraphs[1].textContent = copyValue("controlsAuto");
+  controlsParagraphs[2].textContent = copyValue("controlsSkills");
+  controlsParagraphs[3].textContent = copyValue("controlsUpgrades");
+
+  languageButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.lang === currentLanguage);
+  });
+
+  applyTheme(currentTheme);
+  renderLeaderboard();
+  updateHud();
 }
 
 function resizeStarfieldCanvas() {
@@ -372,8 +616,18 @@ function resizeGameCanvas() {
 }
 
 function handleResize() {
-  resizeStarfieldCanvas();
-  resizeGameCanvas();
+  keys.clear();
+  STARFIELD.pointer.active = false;
+
+  if (resizeFrame) {
+    cancelAnimationFrame(resizeFrame);
+  }
+
+  resizeFrame = requestAnimationFrame(() => {
+    resizeStarfieldCanvas();
+    resizeGameCanvas();
+    resizeFrame = 0;
+  });
 }
 
 function clearOverlay() {
@@ -381,55 +635,69 @@ function clearOverlay() {
   restartButton.hidden = true;
 }
 
+function createOverlayButton(label, onClick) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "upgrade-button";
+  button.textContent = label;
+  button.addEventListener("click", onClick);
+  return button;
+}
+
 function createWaveConfig(waveNumber) {
+  const isBossWave = waveNumber > 0 && waveNumber % BOSS_WAVE_INTERVAL === 0;
   return {
     number: waveNumber,
-    spawnBudget: 8 + waveNumber * 4,
+    spawnBudget: isBossWave ? 0 : 10 + waveNumber * 4,
     spentBudget: 0,
-    timeRemaining: 18 + Math.min(14, waveNumber * 1.5),
-    spawnCooldown: 0.5,
-    spawnInterval: Math.max(0.28, 1.05 - waveNumber * 0.05),
-    maxConcurrent: 5 + waveNumber * 2,
+    timeRemaining: isBossWave ? 999 : 12 + Math.min(8, waveNumber),
+    spawnCooldown: 0.3,
+    spawnInterval: Math.max(0.24, 0.82 - waveNumber * 0.045),
+    maxConcurrent: isBossWave ? 0 : 6 + waveNumber,
     breakTimer: 0,
     inBreak: false,
+    isBossWave,
+    bossSpawned: false,
   };
 }
 
 function startWave(waveNumber) {
   state.wave = createWaveConfig(waveNumber);
-  state.player.health = Math.min(state.player.maxHealth, state.player.health + 12 + waveNumber * 2);
-  statusText.textContent = `Hullam ${waveNumber} elindult. Keszitsd a helyet az uj ellenfeleknek.`;
+  statusText.textContent = state.wave.isBossWave
+    ? copyValue("bossStart", waveNumber)
+    : copyValue("waveStart", waveNumber, BOSS_WAVE_INTERVAL);
   updateHud();
 }
 
 function startWaveBreak() {
   state.wave.inBreak = true;
-  state.wave.breakTimer = 3.5;
-  state.player.health = Math.min(state.player.maxHealth, state.player.health + 20);
-  statusText.textContent = `Hullam ${state.wave.number} tisztitva. Rogton jon a kovetkezo kor.`;
+  state.wave.breakTimer = 2.2;
+  statusText.textContent = copyValue("waveBreak", state.wave.number);
 }
 
 function resetGame() {
   state = createInitialState();
   clearOverlay();
   overlay.classList.add("hidden");
-  overlayLabel.textContent = "Kor vege";
+  overlayLabel.textContent = copyValue("overlayEnd");
   startWave(1);
   updateHud();
-  statusText.textContent = "Tulelj minel tovabb. Loj, gyujts XP-t, es fejlodj menet kozben.";
+  statusText.textContent = copyValue("initialStatus");
 }
 
 function startGame() {
   savePlayerName();
   resetGame();
   state.running = true;
+  state.paused = false;
   lastTimestamp = 0;
-  statusText.textContent = `A kor elindult. Hullam ${state.wave.number}, tartsd mozgasban a hosod.`;
+  statusText.textContent = copyValue("startedStatus", state.wave.number);
 }
 
 function endGame() {
   state.running = false;
   state.gameOver = true;
+  state.paused = false;
   state.upgradeMode = false;
 
   if (state.score > getBestScore()) {
@@ -447,11 +715,56 @@ function endGame() {
   updateHud();
   clearOverlay();
   overlay.classList.remove("hidden");
-  overlayLabel.textContent = "Kor vege";
-  overlayTitle.textContent = `Vege! Pontszam: ${Math.floor(state.score)}`;
-  overlayCopy.textContent = `Tulelt ido: ${state.elapsed.toFixed(1)} mp, kiutott ellenfelek: ${state.kills}. Uj korben probald mas fejlesztesekkel.`;
+  overlayLabel.textContent = copyValue("overlayEnd");
+  overlayTitle.textContent = copyValue("gameOverTitle", Math.floor(state.score));
+  overlayCopy.textContent = copyValue("gameOverCopy", state.elapsed, state.kills);
   restartButton.hidden = false;
-  statusText.textContent = "A kor veget ert. Ujrainditassal mehetsz tovabb.";
+  restartButton.textContent = copyValue("restart");
+  statusText.textContent = copyValue("gameOverStatus");
+}
+
+function openPauseMenu() {
+  if (!state.running || state.gameOver || state.upgradeMode || state.paused) {
+    return;
+  }
+
+  state.running = false;
+  state.paused = true;
+  clearOverlay();
+  overlay.classList.remove("hidden");
+  overlayLabel.textContent = copyValue("pause");
+  overlayTitle.textContent = copyValue("pausedTitle");
+  overlayCopy.textContent = copyValue("pausedCopy");
+  overlayActions.appendChild(createOverlayButton(copyValue("continue"), resumeFromPause));
+  overlayActions.appendChild(createOverlayButton(copyValue("restart"), startGame));
+  overlayActions.appendChild(createOverlayButton(copyValue("endGame"), endGame));
+  statusText.textContent = copyValue("pausedStatus");
+}
+
+function resumeFromPause() {
+  if (!state.paused || state.gameOver) {
+    return;
+  }
+
+  state.paused = false;
+  state.running = true;
+  overlay.classList.add("hidden");
+  clearOverlay();
+  overlayLabel.textContent = copyValue("overlayEnd");
+  statusText.textContent = copyValue("resumedStatus", state.wave.number);
+}
+
+function togglePause() {
+  if (state.gameOver || state.upgradeMode) {
+    return;
+  }
+
+  if (state.paused) {
+    resumeFromPause();
+    return;
+  }
+
+  openPauseMenu();
 }
 
 function buildUpgradeChoices() {
@@ -472,20 +785,20 @@ function showUpgradeOverlay() {
   state.upgradeChoices = buildUpgradeChoices();
   clearOverlay();
   overlay.classList.remove("hidden");
-  overlayLabel.textContent = "Fejlesztes";
-  overlayTitle.textContent = `Szint ${state.player.level}`;
-  overlayCopy.textContent = "Valassz egy fejlesztest. A kor csak ezutan folytatodik.";
+  overlayLabel.textContent = copyValue("upgrade");
+  overlayTitle.textContent = copyValue("hudLevel", state.player.level);
+  overlayCopy.textContent = copyValue("upgradeCopy");
 
   state.upgradeChoices.forEach((choice) => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "upgrade-button";
-    button.innerHTML = `<strong>${choice.title}</strong><span>${choice.description}</span>`;
+    button.innerHTML = `<strong>${upgradeTextFor(choice.id, 0)}</strong><span>${upgradeTextFor(choice.id, 1)}</span>`;
     button.addEventListener("click", () => applyUpgrade(choice));
     overlayActions.appendChild(button);
   });
 
-  statusText.textContent = "Szintlepes! Valassz egy fejlesztest az arena folytatasahoz.";
+  statusText.textContent = copyValue("upgradeStatus");
 }
 
 function applyUpgrade(choice) {
@@ -495,7 +808,7 @@ function applyUpgrade(choice) {
   overlay.classList.add("hidden");
   clearOverlay();
   state.running = true;
-  statusText.textContent = `${choice.title} aktiv. Nyomd tovabb az arenat.`;
+  statusText.textContent = copyValue("upgradeApplied", upgradeTextFor(choice.id, 0));
   updateHud();
 }
 
@@ -562,9 +875,59 @@ function spawnParticles(x, y, color, count, speed = 180) {
   }
 }
 
+function spawnBoss() {
+  const angle = Math.random() * Math.PI * 2;
+  const distance = Math.max(ARENA.width, ARENA.height) * 0.6;
+  state.boss = {
+    x: state.player.x + Math.cos(angle) * distance,
+    y: state.player.y + Math.sin(angle) * distance,
+    radius: 54,
+    speed: 78 + state.wave.number * 2,
+    health: 420 + state.wave.number * 35,
+    maxHealth: 420 + state.wave.number * 35,
+    touchDamage: 24,
+    shootCooldown: 1.2,
+    attackPattern: 0,
+  };
+  state.wave.bossSpawned = true;
+}
+
+function fireBossBurst() {
+  if (!state.boss) {
+    return;
+  }
+
+  const baseAngle = Math.atan2(state.player.y - state.boss.y, state.player.x - state.boss.x);
+  const spread = state.boss.attackPattern % 2 === 0 ? [-0.28, 0, 0.28] : [-0.45, -0.15, 0.15, 0.45];
+
+  spread.forEach((offset) => {
+    const angle = baseAngle + offset;
+    state.enemyProjectiles.push({
+      x: state.boss.x,
+      y: state.boss.y,
+      vx: Math.cos(angle) * 260,
+      vy: Math.sin(angle) * 260,
+      radius: 9,
+      damage: 12,
+      life: 4.2,
+    });
+  });
+
+  state.boss.attackPattern += 1;
+  spawnParticles(state.boss.x, state.boss.y, "#ff8d5c", 10, 120);
+}
+
 function findNearestEnemy() {
   let nearestEnemy = null;
   let nearestDistance = Infinity;
+
+  if (state.boss) {
+    const bossDistance = Math.hypot(state.boss.x - state.player.x, state.boss.y - state.player.y);
+    if (bossDistance < nearestDistance && bossDistance < BULLET_RANGE) {
+      nearestDistance = bossDistance;
+      nearestEnemy = state.boss;
+    }
+  }
 
   state.enemies.forEach((enemy) => {
     const distance = Math.hypot(enemy.x - state.player.x, enemy.y - state.player.y);
@@ -575,6 +938,96 @@ function findNearestEnemy() {
   });
 
   return nearestEnemy;
+}
+
+function getMoveVector() {
+  let moveX = 0;
+  let moveY = 0;
+
+  if (keys.has("arrowup") || keys.has("w")) {
+    moveY -= 1;
+  }
+  if (keys.has("arrowdown") || keys.has("s")) {
+    moveY += 1;
+  }
+  if (keys.has("arrowleft") || keys.has("a")) {
+    moveX -= 1;
+  }
+  if (keys.has("arrowright") || keys.has("d")) {
+    moveX += 1;
+  }
+
+  return { moveX, moveY };
+}
+
+function useDash() {
+  if (!state.running || state.upgradeMode || state.player.dashCooldown > 0) {
+    return;
+  }
+
+  const { moveX, moveY } = getMoveVector();
+  const length = Math.hypot(moveX, moveY);
+  if (!length) {
+    return;
+  }
+
+  state.player.x += (moveX / length) * 180;
+  state.player.y += (moveY / length) * 180;
+  state.player.dashCooldown = 3.2;
+  state.player.invulnerableTimer = 0.25;
+  spawnParticles(state.player.x, state.player.y, "#72f1b8", 18, 220);
+  statusText.textContent = copyValue("dashStatus");
+}
+
+function useShockwave() {
+  if (!state.running || state.upgradeMode || state.player.shockwaveCooldown > 0) {
+    return;
+  }
+
+  let hitSomething = false;
+
+  state.enemies.forEach((enemy) => {
+    const dx = enemy.x - state.player.x;
+    const dy = enemy.y - state.player.y;
+    const distance = Math.hypot(dx, dy) || 1;
+
+    if (distance < 150) {
+      enemy.health -= 26;
+      enemy.x += (dx / distance) * 90;
+      enemy.y += (dy / distance) * 90;
+      hitSomething = true;
+    }
+  });
+
+  if (state.boss) {
+    const dx = state.boss.x - state.player.x;
+    const dy = state.boss.y - state.player.y;
+    const distance = Math.hypot(dx, dy) || 1;
+
+    if (distance < 180) {
+      state.boss.health -= 30;
+      state.boss.x += (dx / distance) * 60;
+      state.boss.y += (dy / distance) * 60;
+      hitSomething = true;
+    }
+  }
+
+  for (let enemyIndex = state.enemies.length - 1; enemyIndex >= 0; enemyIndex -= 1) {
+    if (state.enemies[enemyIndex].health <= 0) {
+      killEnemy(enemyIndex);
+    }
+  }
+
+  if (state.boss && state.boss.health <= 0) {
+    defeatBoss();
+  }
+
+  state.player.shockwaveCooldown = 7;
+  state.player.invulnerableTimer = 0.2;
+  spawnParticles(state.player.x, state.player.y, "#7be0ff", 28, 280);
+  statusText.textContent = hitSomething
+    ? copyValue("shockwaveHit")
+    : copyValue("shockwaveMiss");
 }
 
 function fireAtNearestEnemy() {
@@ -604,26 +1057,39 @@ function fireAtNearestEnemy() {
   spawnParticles(state.player.x, state.player.y, getTheme().bulletColor, 4, 90);
 }
 
-function updatePlayer(delta) {
-  let moveX = 0;
-  let moveY = 0;
+function defeatBoss() {
+  if (!state.boss) {
+    return;
+  }
 
-  if (keys.has("arrowup") || keys.has("w")) {
-    moveY -= 1;
+  state.score += 240;
+  spawnParticles(state.boss.x, state.boss.y, "#ffbf69", 36, 260);
+
+  for (let i = 0; i < 10; i += 1) {
+    state.xpOrbs.push({
+      x: state.boss.x + (Math.random() - 0.5) * 40,
+      y: state.boss.y + (Math.random() - 0.5) * 40,
+      radius: 7,
+      value: 1,
+      life: 18,
+    });
   }
-  if (keys.has("arrowdown") || keys.has("s")) {
-    moveY += 1;
-  }
-  if (keys.has("arrowleft") || keys.has("a")) {
-    moveX -= 1;
-  }
-  if (keys.has("arrowright") || keys.has("d")) {
-    moveX += 1;
-  }
+
+  state.boss = null;
+  state.enemyProjectiles = [];
+  statusText.textContent = copyValue("bossDefeated", state.wave.number);
+}
+
+function updatePlayer(delta) {
+  const { moveX, moveY } = getMoveVector();
 
   const length = Math.hypot(moveX, moveY) || 1;
   state.player.x += (moveX / length) * state.player.speed * delta;
   state.player.y += (moveY / length) * state.player.speed * delta;
+
+  state.player.dashCooldown = Math.max(0, state.player.dashCooldown - delta);
+  state.player.shockwaveCooldown = Math.max(0, state.player.shockwaveCooldown - delta);
+  state.player.invulnerableTimer = Math.max(0, state.player.invulnerableTimer - delta);
 
   state.player.fireCooldown -= delta;
   if (state.player.fireCooldown <= 0) {
@@ -655,6 +1121,40 @@ function updateEnemies(delta) {
 
     enemy.x += (dx / length) * enemy.speed * delta;
     enemy.y += (dy / length) * enemy.speed * delta;
+  });
+}
+
+function updateBoss(delta) {
+  if (!state.boss) {
+    return;
+  }
+
+  const dx = state.player.x - state.boss.x;
+  const dy = state.player.y - state.boss.y;
+  const distance = Math.hypot(dx, dy) || 1;
+  const orbitAngle = Math.atan2(dy, dx) + Math.PI / 2;
+
+  if (distance > 220) {
+    state.boss.x += (dx / distance) * state.boss.speed * delta;
+    state.boss.y += (dy / distance) * state.boss.speed * delta;
+  } else {
+    state.boss.x += Math.cos(orbitAngle) * state.boss.speed * 0.65 * delta;
+    state.boss.y += Math.sin(orbitAngle) * state.boss.speed * 0.65 * delta;
+  }
+
+  state.boss.shootCooldown -= delta;
+  if (state.boss.shootCooldown <= 0) {
+    fireBossBurst();
+    state.boss.shootCooldown = Math.max(0.75, 1.28 - state.wave.number * 0.03);
+  }
+}
+
+function updateEnemyProjectiles(delta) {
+  state.enemyProjectiles = state.enemyProjectiles.filter((projectile) => projectile.life > 0);
+  state.enemyProjectiles.forEach((projectile) => {
+    projectile.x += projectile.vx * delta;
+    projectile.y += projectile.vy * delta;
+    projectile.life -= delta;
   });
 }
 
@@ -720,6 +1220,21 @@ function updateBulletHits() {
   for (let bulletIndex = state.bullets.length - 1; bulletIndex >= 0; bulletIndex -= 1) {
     const bullet = state.bullets[bulletIndex];
 
+    if (state.boss) {
+      const bossDistance = Math.hypot(state.boss.x - bullet.x, state.boss.y - bullet.y);
+      if (bossDistance < state.boss.radius + bullet.radius) {
+        state.boss.health -= bullet.damage;
+        bullet.life = 0;
+        spawnParticles(bullet.x, bullet.y, getTheme().hitColor, 5, 90);
+
+        if (state.boss.health <= 0) {
+          defeatBoss();
+        }
+
+        continue;
+      }
+    }
+
     for (let enemyIndex = state.enemies.length - 1; enemyIndex >= 0; enemyIndex -= 1) {
       const enemy = state.enemies[enemyIndex];
       const distance = Math.hypot(enemy.x - bullet.x, enemy.y - bullet.y);
@@ -739,9 +1254,37 @@ function updateBulletHits() {
   }
 }
 
+function updateEnemyProjectileHits() {
+  if (state.player.invulnerableTimer > 0) {
+    return;
+  }
+
+  for (let bulletIndex = state.enemyProjectiles.length - 1; bulletIndex >= 0; bulletIndex -= 1) {
+    const projectile = state.enemyProjectiles[bulletIndex];
+
+    const distance = Math.hypot(projectile.x - state.player.x, projectile.y - state.player.y);
+    if (distance < projectile.radius + state.player.radius) {
+      state.player.health -= projectile.damage;
+      state.player.invulnerableTimer = 0.25;
+      projectile.life = 0;
+      spawnParticles(projectile.x, projectile.y, "#ff5a6b", 12, 180);
+      statusText.textContent = copyValue("bossHit");
+      break;
+    }
+  }
+}
+
 function updateCollisions(delta) {
   if (state.enemyDamageCooldown > 0) {
     state.enemyDamageCooldown -= delta;
+  }
+
+  if (state.player.invulnerableTimer > 0) {
+    if (state.player.health <= 0) {
+      state.player.health = 0;
+      endGame();
+    }
+    return;
   }
 
   state.enemies.forEach((enemy) => {
@@ -754,6 +1297,15 @@ function updateCollisions(delta) {
       spawnParticles(state.player.x, state.player.y, "#ff5a6b", 18, 210);
     }
   });
+
+  if (state.boss) {
+    const bossDistance = Math.hypot(state.player.x - state.boss.x, state.player.y - state.boss.y);
+    if (bossDistance < state.player.radius + state.boss.radius && state.enemyDamageCooldown <= 0) {
+      state.player.health -= state.boss.touchDamage;
+      state.enemyDamageCooldown = 0.45;
+      spawnParticles(state.player.x, state.player.y, "#ff5a6b", 22, 220);
+    }
+  }
 
   if (state.player.health <= 0) {
     state.player.health = 0;
@@ -782,6 +1334,17 @@ function updateWave(delta) {
   state.wave.timeRemaining -= delta;
   state.wave.spawnCooldown -= delta;
 
+  if (state.wave.isBossWave) {
+    if (!state.wave.bossSpawned) {
+      spawnBoss();
+    }
+
+    if (!state.boss && state.enemyProjectiles.length === 0) {
+      startWaveBreak();
+    }
+    return;
+  }
+
   if (
     state.wave.spawnCooldown <= 0 &&
     state.wave.spentBudget < state.wave.spawnBudget &&
@@ -805,7 +1368,7 @@ function updateWave(delta) {
   ) {
     startWaveBreak();
   } else if (state.wave.timeRemaining <= 0) {
-    statusText.textContent = `Hullam ${state.wave.number} vegfazis. Tisztitsd le a maradek ellenfeleket.`;
+    statusText.textContent = copyValue("waveFinal", state.wave.number);
   }
 }
 
@@ -821,8 +1384,11 @@ function updateGame(delta) {
   updatePlayer(delta);
   updateCamera(delta);
   updateBullets(delta);
+  updateEnemyProjectiles(delta);
   updateEnemies(delta);
+  updateBoss(delta);
   updateBulletHits();
+  updateEnemyProjectileHits();
   updateXpOrbs(delta);
   updateCollisions(delta);
   updateParticles(delta);
@@ -1077,6 +1643,24 @@ function drawBullets() {
   });
 }
 
+function drawEnemyProjectiles() {
+  state.enemyProjectiles.forEach((projectile) => {
+    if (!isOnScreen(projectile.x, projectile.y, 50)) {
+      return;
+    }
+
+    const projectileX = toScreenX(projectile.x);
+    const projectileY = toScreenY(projectile.y);
+    context.beginPath();
+    context.arc(projectileX, projectileY, projectile.radius, 0, Math.PI * 2);
+    context.fillStyle = currentTheme === "battlefield" ? "#ff8d5c" : "#ff5a6b";
+    context.shadowBlur = 12;
+    context.shadowColor = currentTheme === "battlefield" ? "#ff8d5c" : "#ff5a6b";
+    context.fill();
+    context.shadowBlur = 0;
+  });
+}
+
 function drawXpOrbs() {
   state.xpOrbs.forEach((orb) => {
     if (!isOnScreen(orb.x, orb.y, 50)) {
@@ -1126,6 +1710,69 @@ function drawEnemies() {
 
     drawEnemyHealth(enemy);
   });
+}
+
+function drawBoss() {
+  if (!state.boss || !isOnScreen(state.boss.x, state.boss.y, state.boss.radius + 80)) {
+    return;
+  }
+
+  const bossX = toScreenX(state.boss.x);
+  const bossY = toScreenY(state.boss.y);
+
+  if (currentTheme === "battlefield") {
+    context.save();
+    context.translate(bossX, bossY);
+    context.fillStyle = "#6d604d";
+    context.fillRect(-state.boss.radius, -state.boss.radius * 0.55, state.boss.radius * 2, state.boss.radius * 1.1);
+    context.fillStyle = "#4a4135";
+    context.fillRect(-state.boss.radius * 0.35, -state.boss.radius * 0.95, state.boss.radius * 0.7, state.boss.radius * 0.6);
+    context.fillRect(state.boss.radius * 0.12, -state.boss.radius * 0.1, state.boss.radius * 1.05, state.boss.radius * 0.16);
+    context.strokeStyle = "#2c2722";
+    context.lineWidth = 5;
+    context.beginPath();
+    context.moveTo(-state.boss.radius * 0.82, state.boss.radius * 0.7);
+    context.lineTo(state.boss.radius * 0.82, state.boss.radius * 0.7);
+    context.moveTo(-state.boss.radius * 0.82, -state.boss.radius * 0.7);
+    context.lineTo(state.boss.radius * 0.82, -state.boss.radius * 0.7);
+    context.stroke();
+    context.restore();
+  } else {
+    context.beginPath();
+    context.arc(bossX, bossY, state.boss.radius, 0, Math.PI * 2);
+    context.fillStyle = "rgba(255, 122, 24, 0.9)";
+    context.shadowBlur = 20;
+    context.shadowColor = "rgba(255, 122, 24, 0.65)";
+    context.fill();
+    context.shadowBlur = 0;
+
+    context.beginPath();
+    context.arc(bossX, bossY, state.boss.radius * 0.42, 0, Math.PI * 2);
+    context.fillStyle = "#081421";
+    context.fill();
+  }
+}
+
+function drawBossHealthBar() {
+  if (!state.boss) {
+    return;
+  }
+
+  const barWidth = Math.min(520, ARENA.width - 120);
+  const barX = (ARENA.width - barWidth) / 2;
+  const barY = 24;
+  const healthRatio = clamp(state.boss.health / state.boss.maxHealth, 0, 1);
+
+  context.fillStyle = "rgba(255,255,255,0.12)";
+  context.fillRect(barX, barY, barWidth, 16);
+  context.fillStyle = currentTheme === "battlefield" ? "#ff8d5c" : "#ff5a6b";
+  context.fillRect(barX, barY, barWidth * healthRatio, 16);
+  context.strokeStyle = "rgba(255,255,255,0.18)";
+  context.strokeRect(barX, barY, barWidth, 16);
+  context.fillStyle = "rgba(239, 247, 255, 0.96)";
+  context.font = "700 16px Trebuchet MS";
+  context.textAlign = "center";
+  context.fillText(copyValue("overlayBossHp", state.boss.health, state.boss.maxHealth), ARENA.width / 2, barY + 34);
 }
 
 function drawBattlefieldEnemy(enemy) {
@@ -1241,10 +1888,11 @@ function drawWeaponInfo() {
   context.textAlign = "left";
   context.fillStyle = currentTheme === "battlefield" ? "rgba(240, 230, 210, 0.96)" : "rgba(239, 247, 255, 0.92)";
   context.font = "700 16px Trebuchet MS";
-  context.fillText(`Szint ${state.player.level}`, infoX, infoY);
+  context.fillText(copyValue("hudLevel", state.player.level), infoX, infoY);
   context.fillStyle = getTheme().hudAccent;
   context.font = "14px Trebuchet MS";
-  context.fillText(`Loves: ${state.player.multishot} | Sebzes: ${state.player.bulletDamage}`, infoX, infoY + 22);
+  context.fillText(copyValue("hudWeapon", state.player.multishot, state.player.bulletDamage), infoX, infoY + 22);
+  context.fillText(copyValue("hudSkills", state.player.dashCooldown, state.player.shockwaveCooldown), infoX, infoY + 44);
 }
 
 function render() {
@@ -1252,29 +1900,32 @@ function render() {
   drawHealthRing();
   drawWeaponInfo();
   drawXpOrbs();
+  drawBoss();
   drawEnemies();
+  drawEnemyProjectiles();
   drawBullets();
   drawPlayer();
   drawParticles();
+  drawBossHealthBar();
 
   if (!state.running && !state.gameOver && !state.upgradeMode) {
     context.fillStyle = "rgba(239, 247, 255, 0.9)";
     context.font = "700 34px Trebuchet MS";
     context.textAlign = "center";
-    context.fillText("Nyomd meg a Jatek inditasa gombot", ARENA.width / 2, ARENA.height / 2 - 10);
+    context.fillText(copyValue("startPromptTitle"), ARENA.width / 2, ARENA.height / 2 - 10);
     context.font = "18px Trebuchet MS";
     context.fillStyle = "rgba(159, 192, 216, 0.9)";
-    context.fillText("Mozgas: WASD vagy nyilak | Tuzeles: automatikus", ARENA.width / 2, ARENA.height / 2 + 26);
+    context.fillText(copyValue("startPromptCopy"), ARENA.width / 2, ARENA.height / 2 + 26);
   }
 
   if (state.running && state.wave.inBreak) {
     context.fillStyle = "rgba(239, 247, 255, 0.92)";
     context.font = "700 28px Trebuchet MS";
     context.textAlign = "center";
-    context.fillText(`Hullam ${state.wave.number} vege`, ARENA.width / 2, 64);
+    context.fillText(copyValue("breakTitle", state.wave.number), ARENA.width / 2, 64);
     context.font = "16px Trebuchet MS";
     context.fillStyle = "rgba(159, 192, 216, 0.95)";
-    context.fillText(`Kovetkezo hullam: ${state.wave.breakTimer.toFixed(1)} mp`, ARENA.width / 2, 88);
+    context.fillText(copyValue("breakCopy", state.wave.breakTimer), ARENA.width / 2, 88);
   }
 }
 
@@ -1304,12 +1955,20 @@ starfieldCanvas.addEventListener("mouseleave", () => {
   STARFIELD.pointer.active = false;
 });
 
+languageButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    currentLanguage = button.dataset.lang === "en" ? "en" : "hu";
+    localStorage.setItem(gameLanguageKey, currentLanguage);
+    applyGameLanguage();
+  });
+});
+
 themeButtons.forEach((button) => {
   button.addEventListener("click", () => {
     applyTheme(button.dataset.theme);
     statusText.textContent = button.dataset.theme === "battlefield"
-      ? "Battlefield tema aktiv. Katona, drone es tank ellenfelek varnak."
-      : "Neon Arena tema aktiv. Visszatert a futurisztikus csillagmezo.";
+      ? copyValue("themeBattlefieldStatus")
+      : copyValue("themeNeonStatus");
   });
 });
 
@@ -1317,6 +1976,21 @@ playerNameInput.addEventListener("change", savePlayerName);
 playerNameInput.addEventListener("blur", savePlayerName);
 
 window.addEventListener("keydown", (event) => {
+  if (!event.repeat && event.key === "Escape") {
+    event.preventDefault();
+    togglePause();
+    return;
+  }
+
+  if (!event.repeat && event.code === "Space") {
+    event.preventDefault();
+    useDash();
+  }
+
+  if (!event.repeat && (event.code === "ShiftLeft" || event.code === "ShiftRight")) {
+    useShockwave();
+  }
+
   keys.add(event.key.toLowerCase());
 });
 
@@ -1325,12 +1999,17 @@ window.addEventListener("keyup", (event) => {
 });
 
 window.addEventListener("resize", handleResize);
+window.addEventListener("blur", () => {
+  keys.clear();
+  STARFIELD.pointer.active = false;
+});
 
 startButton.addEventListener("click", startGame);
 restartButton.addEventListener("click", startGame);
 
 clearOverlay();
 applyTheme(currentTheme);
+applyGameLanguage();
 playerNameInput.value = (localStorage.getItem(playerNameKey) || "").slice(0, 16);
 renderLeaderboard();
 handleResize();
