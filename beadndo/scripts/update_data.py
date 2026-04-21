@@ -8,7 +8,7 @@ Sources:
 - World Bank API
 
 The script writes website-friendly CSV files to /data and generates the
-inline chart-data.js bundle used by the static site.
+runtime chart-data.js bundle used by the static site.
 """
 
 from __future__ import annotations
@@ -22,7 +22,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-CHART_DATA_JS = DATA_DIR / "chart-data.js"
+PUBLIC_RUNTIME_DIR = ROOT / "public" / "runtime"
+CHART_DATA_JS = PUBLIC_RUNTIME_DIR / "chart-data.js"
 
 EU_COUNTRIES = [
     {"code": "AT", "name": "Austria", "wb": "AUT"},
@@ -183,6 +184,7 @@ def round1(value: float) -> float:
 
 
 def build_chart_data_js() -> None:
+    PUBLIC_RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
     datasets = {
         "municipalWastePerCapita": read_csv(DATA_DIR / "municipal_waste_per_capita.csv"),
         "wasteTreatmentComparison": read_csv(DATA_DIR / "waste_treatment_comparison.csv"),

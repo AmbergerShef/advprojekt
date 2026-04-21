@@ -1,6 +1,6 @@
 /*
   The source CSV files remain in /data, but the charts render from chartData,
-  a generated local JavaScript object loaded from data/chart-data.js.
+  a generated local JavaScript object loaded from public/runtime/chart-data.js.
   This avoids runtime CSV fetch issues when the page is opened as a simple
   static file while keeping the underlying data files easy to inspect.
 */

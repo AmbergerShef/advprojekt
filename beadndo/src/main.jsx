@@ -1,5 +1,6 @@
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
+import "./styles/site.css";
 
 if ("scrollRestoration" in window.history) {
   window.history.scrollRestoration = "manual";
