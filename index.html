@@ -1,184 +1,22 @@
 <!DOCTYPE html>
-<html lang="hu">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Szakács Róbert | Homepage</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="homepage.css">
-</head>
-<body>
-  <canvas id="constellation" aria-hidden="true"></canvas>
-
-  <header class="site-header">
-    <div class="brand">SR</div>
-    <div class="language-switcher" aria-label="Language switcher">
-      <button class="lang-btn active" type="button" data-lang="hu">🇭🇺 HU</button>
-      <button class="lang-btn" type="button" data-lang="en">🇬🇧 EN</button>
-      <button class="lang-btn" type="button" data-lang="ro">🇷🇴 RO</button>
-    </div>
-    <nav class="site-nav">
-      <a href="#rolam">Rólam</a>
-      <a href="#projektek">Projektek</a>
-      <a href="#jatek">Játék</a>
-      <a href="#eleres">Elérés</a>
-    </nav>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">Homepage</p>
-        <h1>Szakács Róbert vagyok.</h1>
-        <p class="lead">
-          Egyetemi projekteken, adatvizualizációs ötleteken és webes megoldásokon dolgozom.
-          Ez az oldalam a saját online kiindulópontom, ahol a fontosabb munkáimat és projektjeimet mutatom be.
-        </p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="beadndo/index.html">Waste-to-Energy projekt</a>
-          <a class="button button-secondary" href="#projektek">További részletek</a>
-        </div>
-      </div>
-
-      <aside class="hero-card">
-        <p class="card-label">Most kiemelt projekt</p>
-        <h2>Waste-to-Energy and Sustainability in Europe</h2>
-        <p>
-          Interaktív adatvizualizációs projekt az európai hulladékkezelésről, energia-visszanyerésről
-          és fenntarthatósági mutatókról, többnyelvű felülettel és helyi, tisztított adatállományokkal.
-        </p>
-        <ul class="feature-list">
-          <li>Többnyelvű projektoldal</li>
-          <li>Interaktív diagramok és szűrők</li>
-          <li>Eurostat és World Bank adatok</li>
-        </ul>
-      </aside>
-    </section>
-
-    <section class="panel" id="rolam">
-      <div class="section-heading">
-        <p class="eyebrow">Rólam</p>
-        <h2>Adatok, dizájn és történetmesélés egy helyen</h2>
-      </div>
-      <div class="about-grid">
-        <article class="about-card">
-          <h3>Fókuszom</h3>
-          <p>
-            Olyan projekteket szeretek építeni, ahol az adatok nemcsak elemzésként,
-            hanem vizuálisan is értelmezhető formában jelennek meg.
-          </p>
-        </article>
-        <article class="about-card">
-          <h3>Érdeklődésem</h3>
-          <p>
-            Adatelemzés, adatvizualizáció, frontend fejlesztés és olyan digitális
-            felületek tervezése, amelyek egyszerre informatívak és látványosak.
-          </p>
-        </article>
-        <article class="about-card">
-          <h3>Célom</h3>
-          <p>
-            Olyan portfólió kialakítása, amely jól bemutatja a gondolkodásmódomat,
-            a technikai készségeimet és az egyetemi projektmunkáimat.
-          </p>
-        </article>
-      </div>
-    </section>
-
-    <section class="panel project-panel" id="projektek">
-      <div class="section-heading">
-        <p class="eyebrow">Projektek</p>
-        <h2>Válogatás a kiemelt munkáimból</h2>
-      </div>
-      <div class="project-cards">
-        <article class="project-card">
-          <div class="project-copy">
-            <span class="project-tag">Legfrissebb projekt</span>
-            <h3>Waste-to-Energy and Sustainability in Europe</h3>
-            <p>
-              Adatvizualizációs portfólióprojekt az európai települési hulladékról,
-              kezelési módokról, körforgásosságról és fenntarthatósági összefüggésekről.
-            </p>
-          </div>
-          <a class="button button-primary wide" href="beadndo/index.html">Megnyitás</a>
-        </article>
-
-        <article class="project-card">
-          <div class="project-copy">
-            <span class="project-tag alt">Kész projektoldal</span>
-            <h3>Microsoft vs Apple</h3>
-            <p>
-              Pénzügyi adatokra épülő összehasonlító weboldal, amely a két vállalat
-              árbevételét, profitabilitását és üzleti szerkezetét mutatja be.
-            </p>
-          </div>
-          <a class="button button-secondary wide" href="adatelemzes-projekt/index.html">Megnyitás</a>
-        </article>
-
-        <article class="project-card">
-          <div class="project-copy">
-            <span class="project-tag alt">Korábbi projekt</span>
-            <h3>Romániai városok népességváltozása</h3>
-            <p>
-              Egy korábbi adatvizualizációs projekt, amely a romániai városok
-              népességváltozását mutatja be 2010 és 2019 között.
-            </p>
-          </div>
-          <a class="button button-secondary wide" href="romania-nepesseg/index.html">Megnyitás</a>
-        </article>
-      </div>
-    </section>
-
-    <section class="panel game-panel" id="jatek">
-      <div class="section-heading">
-        <p class="eyebrow">Játék</p>
-        <h2>Last Ring Arena</h2>
-      </div>
-      <div class="game-showcase">
-        <div class="game-copy">
-          <p class="game-lead">
-            Egy saját survival arena projektem, ahol a játékos egyre nehezebb hullámok ellen próbál minél tovább életben maradni.
-            Folyamatos fejlesztésekkel, témaválasztóval és ranglistával épül tovább.
-          </p>
-          <ul class="feature-list game-feature-list">
-            <li>Neon Arena és Battlefield témák</li>
-            <li>Hullámrendszer, fejlesztések és leaderboard</li>
-            <li>Nyitottabb mozgástér kamerakövetéssel</li>
-          </ul>
-          <a class="button button-primary" href="jatek-projekt/index.html">Játék megnyitása</a>
-        </div>
-        <aside class="game-preview-card" aria-label="Last Ring Arena illusztráció">
-          <div class="preview-sky"></div>
-          <div class="preview-ring"></div>
-          <div class="preview-player"></div>
-          <div class="preview-enemy preview-enemy-one"></div>
-          <div class="preview-enemy preview-enemy-two"></div>
-          <div class="preview-enemy preview-enemy-three"></div>
-        </aside>
-      </div>
-    </section>
-
-    <section class="panel contact-panel" id="eleres">
-      <div class="section-heading">
-        <p class="eyebrow">Elérés</p>
-        <h2>Ez az oldal a saját GitHub kezdőlapom alapja</h2>
-      </div>
-      <p class="contact-text">
-        A homepage célja, hogy összefogja a projektjeimet és egy könnyen navigálható,
-        személyes belépőoldalként működjön. Később további munkákkal, új projektekkel
-        és részletesebb bemutatkozó tartalommal is bővíthető.
-      </p>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <p>Szakács Róbert</p>
-    <p>GitHub homepage és projektportfólió</p>
-  </footer>
-
-  <script src="language.js"></script>
-  <script src="homepage.js"></script>
-</body>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Róbert Szakács | Project Shell</title>
+    <meta
+      name="description"
+      content="A React project shell that launches university projects and interactive apps from one root homepage."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./src/main.jsx"></script>
+  </body>
 </html>

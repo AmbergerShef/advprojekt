@@ -1,0 +1,6 @@
+node_modules
+dist
+.DS_Store
+*.log
+beadndo/node_modules
+beadndo/dist
