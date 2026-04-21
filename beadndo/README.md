@@ -1,6 +1,6 @@
 # Waste-to-Energy Europe Portfolio
 
-This repository is deployed as a Vite-built React site on GitHub Pages.
+This repository is deployed as a Vite-built React site on GitHub Page.
 
 The current codebase is intentionally split into three layers:
 
