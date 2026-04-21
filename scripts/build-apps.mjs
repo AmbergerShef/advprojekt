@@ -58,6 +58,19 @@ function buildViteApp({ sourceDir, outDir }) {
   const sourcePath = resolve(root, sourceDir);
   const targetPath = join(appsDir, outDir);
   ensureCleanDir(targetPath);
+  const hasNodeModules = existsSync(join(sourcePath, "node_modules"));
+  const hasPackageLock = existsSync(join(sourcePath, "package-lock.json"));
+
+  if (!hasNodeModules) {
+    execFileSync(process.platform === "win32" ? "npm.cmd" : "npm", [hasPackageLock ? "ci" : "install"], {
+      cwd: sourcePath,
+      stdio: "inherit",
+      env: {
+        ...process.env,
+        PATH: `/opt/homebrew/bin:${process.env.PATH || ""}`
+      }
+    });
+  }
 
   execFileSync(process.platform === "win32" ? "npm.cmd" : "npm", ["run", "build"], {
     cwd: sourcePath,
