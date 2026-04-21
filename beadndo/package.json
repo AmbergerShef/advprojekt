@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "build:pages": "vite build"
+    "build:pages": "vite build",
+    "build:presentation": "node scripts/generate_presentation.mjs"
   },
   "dependencies": {
     "framer-motion": "^11.11.17",
