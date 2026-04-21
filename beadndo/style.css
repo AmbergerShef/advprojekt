@@ -34,6 +34,7 @@ body {
     linear-gradient(180deg, #fbfaf7 0%, var(--bg-main) 42%, #f4f7f1 100%);
   line-height: 1.65;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
 h1,
@@ -192,6 +193,7 @@ code {
   text-decoration: none;
   font-size: 0.92rem;
   font-weight: 600;
+  text-align: center;
 }
 
 .hero__nav-link:hover {
@@ -319,6 +321,21 @@ code {
   background: linear-gradient(180deg, #fcfcfb 0%, #f8faf8 100%);
   border: 1px solid rgba(31, 42, 40, 0.08);
   overflow: hidden;
+}
+
+.chart-frame .vega-embed,
+.dashboard-chart-frame .vega-embed,
+.chart-frame .vega-embed > div,
+.dashboard-chart-frame .vega-embed > div {
+  width: 100%;
+  max-width: 100%;
+}
+
+.chart-frame svg,
+.dashboard-chart-frame svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 .chart-controls {
@@ -1062,6 +1079,11 @@ code {
     padding: 1.55rem 1.35rem;
   }
 
+  .hero h1 {
+    max-width: none;
+    font-size: clamp(2.35rem, 10vw, 3.5rem);
+  }
+
   .page-shell {
     padding: 0 1rem 3rem;
   }
@@ -1079,6 +1101,7 @@ code {
 
   .chart-frame {
     min-height: 300px;
+    padding: 0.3rem;
   }
 
   .chart-controls__header {
@@ -1119,6 +1142,30 @@ code {
     font-size: 1.05rem;
   }
 
+  .hero__panel {
+    padding: 1rem;
+  }
+
+  .hero__nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero__nav-link {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .language-switch {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .language-switch__button {
+    flex: 1 1 120px;
+    justify-content: center;
+  }
+
   .stat-card__value {
     font-size: 1.75rem;
   }
@@ -1134,5 +1181,93 @@ code {
 
   .profile-metrics {
     grid-template-columns: 1fr;
+  }
+
+  .filter-meta,
+  .dashboard-control-group .filter-meta,
+  .dashboard-table-panel__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-meta__status,
+  .dashboard-control-group .filter-meta__status {
+    max-width: none;
+    text-align: left;
+  }
+
+  .ranking-table,
+  .dashboard-table {
+    min-width: 36rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 1rem 0.75rem 1.2rem;
+  }
+
+  .hero__content {
+    padding: 1.2rem 1rem;
+    border-radius: 18px;
+  }
+
+  .page-shell {
+    padding: 0 0.75rem 2.4rem;
+  }
+
+  .section-card {
+    padding: 1rem;
+    border-radius: 14px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 11vw, 2.7rem);
+  }
+
+  .hero__subtitle,
+  .hero__intro,
+  .section-text,
+  .chart-description,
+  .hero__note,
+  .story-chapter__text,
+  .takeaway-box__text,
+  .contributors-caption,
+  .footer-note-card__text {
+    font-size: 0.98rem;
+  }
+
+  .language-switch__button,
+  .hero__nav-link,
+  .chart-controls__reset,
+  .dashboard-reset,
+  .filter-action-button {
+    min-height: 44px;
+  }
+
+  .stat-card,
+  .filter-card,
+  .profile-panel,
+  .ranking-panel,
+  .dashboard-visual-panel,
+  .dashboard-table-panel {
+    padding: 0.95rem;
+  }
+
+  .chart-controls,
+  .dashboard-controls,
+  .footer-note-card {
+    padding: 1rem;
+  }
+
+  .dashboard-chart-frame {
+    min-height: 280px;
+    padding: 0.35rem;
+  }
+
+  .ranking-table,
+  .dashboard-table {
+    min-width: 32rem;
+    font-size: 0.9rem;
   }
 }

@@ -69,7 +69,7 @@ const sharedConfig = {
     type: "fit-x",
     contains: "padding"
   },
-  width: 640,
+  width: "container",
   height: 280,
   background: "transparent",
   config: {
