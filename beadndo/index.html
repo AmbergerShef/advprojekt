@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="meta.title">Waste-to-Energy and Sustainability in Europe</title>
+    <meta
+      name="description"
+      content="A university data visualization portfolio project on municipal waste, energy recovery, and sustainability indicators in Europe."
+      data-i18n-content="meta.description"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page-top-line" aria-hidden="true"></div>
+    <header class="hero">
+      <div class="hero__content">
+        <div
+          class="language-switch"
+          data-i18n-aria-label="language.selector"
+          aria-label="Language selector"
+        >
+          <button
+            type="button"
+            class="language-switch__button"
+            data-language-button="en"
+            aria-pressed="false"
+          >
+            English
+          </button>
+          <button
+            type="button"
+            class="language-switch__button"
+            data-language-button="hu"
+            aria-pressed="false"
+          >
+            Magyar
+          </button>
+          <button
+            type="button"
+            class="language-switch__button"
+            data-language-button="ro"
+            aria-pressed="false"
+          >
+            Română
+          </button>
+        </div>
+        <div class="hero__text">
+          <p class="eyebrow" data-i18n="hero.eyebrow">Data Visualization Portfolio</p>
+          <h1 data-i18n="hero.title">Waste-to-Energy and Sustainability in Europe</h1>
+          <p class="hero__subtitle" data-i18n="hero.subtitle">
+            A compact visual study of how European countries generate waste,
+            distribute it across treatment pathways, and connect these choices
+            to energy transition and sustainability performance.
+          </p>
+          <p class="hero__intro" data-i18n="hero.intro">
+            Waste management is not only an environmental question. It also
+            reflects how societies consume, how infrastructure is organized,
+            and how policy systems balance recycling, landfill reduction,
+            energy recovery, and climate goals. This project uses public
+            European indicators to explore that relationship through an
+            EU-wide, guided data story with particular attention to Romania
+            and Hungary in their wider regional context.
+          </p>
+          <p class="hero__note" data-i18n="hero.note">
+            The website is built as a lightweight GitHub Pages project using
+            HTML, CSS, JavaScript, and Vega-Lite. All figures rely on cleaned
+            local extracts from official public data sources, primarily
+            Eurostat and the World Bank.
+          </p>
+        </div>
+        <aside class="hero__panel">
+          <p class="hero__panel-kicker" data-i18n="hero.panelKicker">Framing Question</p>
+          <p class="hero__panel-text" data-i18n="hero.panelText">
+            Do countries with lower reliance on landfill and stronger recovery
+            systems also look stronger on wider sustainability indicators?
+          </p>
+          <div class="hero__nav">
+            <a href="#waste-story" class="hero__nav-link" data-i18n="hero.navWaste">Waste System</a>
+            <a href="#transition-story" class="hero__nav-link" data-i18n="hero.navCircularity">Circularity</a>
+            <a href="#climate-story" class="hero__nav-link" data-i18n="hero.navClimate">Climate Context</a>
+            <a href="#methods" class="hero__nav-link" data-i18n="hero.navMethods">Methods</a>
+          </div>
+        </aside>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="stats-strip" data-i18n-aria-label="language.keyFacts" aria-label="Key facts">
+        <article class="stat-card">
+          <p class="stat-card__label" id="stat-waste-label">Highest Waste Level</p>
+          <p class="stat-card__value" id="stat-waste-value">--</p>
+          <p class="stat-card__note" id="stat-waste-note">Loading current data.</p>
+        </article>
+        <article class="stat-card">
+          <p class="stat-card__label" id="stat-recycling-label">Strongest Recycling Share</p>
+          <p class="stat-card__value" id="stat-recycling-value">--</p>
+          <p class="stat-card__note" id="stat-recycling-note">Loading current data.</p>
+        </article>
+        <article class="stat-card">
+          <p class="stat-card__label" id="stat-renewable-label">Highest Renewable Share</p>
+          <p class="stat-card__value" id="stat-renewable-value">--</p>
+          <p class="stat-card__note" id="stat-renewable-note">Loading current data.</p>
+        </article>
+        <article class="stat-card">
+          <p class="stat-card__label" id="stat-focus-label">Romania and Hungary</p>
+          <p class="stat-card__value" id="stat-focus-value">--</p>
+          <p class="stat-card__note" id="stat-focus-note">Loading current data.</p>
+        </article>
+      </section>
+
+      <section class="section-card section-card--intro" id="overview">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="overview.kicker">Project Scope</p>
+          <h2 data-i18n="overview.title">How to read this project</h2>
+        </div>
+        <div class="intro-grid">
+          <article>
+            <h3 data-i18n="overview.researchTitle">Research question</h3>
+            <p data-i18n="overview.researchText">
+              The central question is how waste generation and treatment vary
+              across Europe, and whether stronger recycling and recovery
+              systems are associated with better performance on wider
+              sustainability indicators.
+            </p>
+          </article>
+          <article>
+            <h3 data-i18n="overview.storyTitle">Story structure</h3>
+            <p data-i18n="overview.storyText">
+              The page moves from waste pressure, to treatment choices, to
+              wider sustainability context. This sequence is intended to make
+              the figures read as an argument rather than as isolated charts.
+            </p>
+          </article>
+          <article>
+            <h3 data-i18n="overview.dataTitle">Data integration</h3>
+            <p data-i18n-html="overview.dataText">
+              The <code>data/</code> folder already mirrors the intended
+              workflow: the charts use cleaned local files derived from
+              official public datasets, with the broadest EU-country coverage
+              available for each indicator and transparent source notes in
+              <code>DATA_SOURCES.md</code>.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-card section-card--insights" id="insights">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="insights.kicker">Main Findings</p>
+          <h2 data-i18n="insights.title">What the current evidence suggests</h2>
+        </div>
+        <div class="insight-grid">
+          <article class="insight-card">
+            <h3 data-i18n="insights.card1Title">Waste generation remains uneven</h3>
+            <p data-i18n="insights.card1Text">
+              EU-wide coverage shows that municipal waste generation varies
+              sharply across member states, suggesting that consumption
+              patterns, service systems, and reporting structures still differ
+              substantially.
+            </p>
+          </article>
+          <article class="insight-card">
+            <h3 data-i18n="insights.card2Title">Low landfill often coincides with stronger system capacity</h3>
+            <p data-i18n="insights.card2Text">
+              Countries with minimal landfill tend to rely on a combination of
+              recycling and energy recovery rather than a single dominant
+              pathway.
+            </p>
+          </article>
+          <article class="insight-card">
+            <h3 data-i18n="insights.card3Title">Recycling and circularity are related but not identical</h3>
+            <p data-i18n="insights.card3Text">
+              Strong municipal recycling does not automatically imply the
+              highest circular material use, which depends on the broader
+              economy as well as waste policy.
+            </p>
+          </article>
+          <article class="insight-card">
+            <h3 data-i18n="insights.card4Title">Romania and Hungary illustrate two different transition positions</h3>
+            <p data-i18n="insights.card4Text">
+              Romania remains far more landfill-reliant than Hungary, while
+              Hungary posts stronger recycling, circularity, and energy
+              recovery values. Both therefore help anchor the broader EU
+              comparison in Central and Eastern Europe.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-card section-card--statement" id="purpose">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="purpose.kicker">Project Purpose</p>
+          <h2 data-i18n="purpose.title">Why this topic matters</h2>
+        </div>
+        <div class="statement-layout">
+          <div>
+            <p class="section-text" data-i18n="purpose.text1">
+              Waste policy sits at the intersection of environmental
+              protection, resource management, and energy strategy. This
+              website is designed as a compact course-project portfolio that
+              introduces key indicators related to waste generation, treatment
+              pathways, renewable energy, circularity, and sustainability
+              performance in Europe.
+            </p>
+            <p class="section-text" data-i18n="purpose.text2">
+              The aim is to combine a clear visual structure with transparent
+              use of public data, creating a compact portfolio that can support
+              a concise academic data story without relying on unnecessary
+              technical complexity.
+            </p>
+          </div>
+          <aside class="takeaway-box">
+            <p class="takeaway-box__label" data-i18n="purpose.lensLabel">Analytical Lens</p>
+            <p class="takeaway-box__text" data-i18n="purpose.lensText">
+              The project does not assume that waste-to-energy is inherently
+              positive or negative. Instead, it examines how energy recovery
+              fits within wider patterns of landfill reduction, recycling
+              performance, and sustainability transition.
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="story-chapter" id="waste-story">
+        <p class="story-chapter__label" data-i18n="chapters.part1Label">Part I</p>
+        <h2 class="story-chapter__title" data-i18n="chapters.part1Title">Waste pressure and treatment choices</h2>
+        <p class="story-chapter__text" data-i18n="chapters.part1Text">
+          The first step is to establish how much municipal waste is generated,
+          then examine what happens to that waste after collection. Together,
+          these figures frame the structural pressure placed on national waste
+          systems.
+        </p>
+      </section>
+
+      <section class="section-card" id="chart-1-section">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="figures.fig1Kicker">Figure 1</p>
+          <h2 data-i18n="figures.fig1Heading">How much municipal waste is generated per person?</h2>
+        </div>
+        <div id="chart-1" class="chart-frame"></div>
+        <p class="chart-description" data-i18n="figures.fig1Caption">
+          This figure compares municipal waste generated per person across
+          EU countries in 2023. The default view shows the full ranking with
+          equal visual treatment across countries, while the country filter
+          can be used to isolate any subset for closer comparison. The figure
+          offers a first view of where municipal systems face relatively high
+          or low pressure from household and household-like waste streams.
+        </p>
+      </section>
+
+      <section class="section-card" id="chart-2-section">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="figures.fig2Kicker">Figure 2</p>
+          <h2 data-i18n="figures.fig2Heading">Where does municipal waste go after collection?</h2>
+        </div>
+        <div id="chart-2" class="chart-frame"></div>
+        <p class="chart-description" data-i18n="figures.fig2Caption">
+          This figure compares three key treatment pathways in 2023:
+          recycling, landfill, and incineration with energy recovery. The
+          shares are calculated relative to municipal waste generated, which
+          helps illustrate how national systems distribute waste across
+          contrasting policy models. The default view keeps all available
+          countries in the comparison, and the filters allow the reader to
+          narrow both the country set and the treatment pathways shown.
+          Latvia is omitted here because the full 2023 treatment breakdown
+          needed for this comparison is not available in the harmonized source.
+        </p>
+      </section>
+
+      <section class="section-card section-card--highlight">
+        <div class="highlight-banner">
+          <p class="highlight-banner__label" data-i18n="highlight.label">Interim Takeaway</p>
+          <p class="highlight-banner__text" data-i18n="highlight.text">
+            The treatment figures suggest that lower landfill reliance is often
+            associated with more developed waste-management systems, but the
+            balance between recycling and energy recovery still varies sharply
+            across countries.
+          </p>
+        </div>
+      </section>
+
+      <section class="story-chapter" id="transition-story">
+        <p class="story-chapter__label" data-i18n="chapters.part2Label">Part II</p>
+        <h2 class="story-chapter__title" data-i18n="chapters.part2Title">Circularity and the wider transition</h2>
+        <p class="story-chapter__text" data-i18n="chapters.part2Text">
+          The next pair of figures moves beyond waste operations alone. It
+          asks whether countries that appear stronger on waste management also
+          look stronger on energy transition and circular-economy indicators.
+        </p>
+      </section>
+
+      <section class="section-card" id="chart-3-section">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="figures.fig3Kicker">Figure 3</p>
+          <h2 data-i18n="figures.fig3Heading">How quickly is renewable energy expanding?</h2>
+        </div>
+        <div id="chart-3" class="chart-frame"></div>
+        <p class="chart-description" data-i18n="figures.fig3Caption">
+          This figure places waste-to-energy within a wider energy-transition
+          context. The default view includes all available EU countries, and
+          the filters can be used to reduce visual density when a smaller
+          comparison is more useful. The optional EU average benchmark helps
+          place any selected country set inside the broader transition trend.
+        </p>
+      </section>
+
+      <section class="section-card" id="chart-4-section">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="figures.fig4Kicker">Figure 4</p>
+          <h2 data-i18n="figures.fig4Heading">Do higher recycling rates imply stronger circularity?</h2>
+        </div>
+        <div id="chart-4" class="chart-frame"></div>
+        <p class="chart-description" data-i18n="figures.fig4Caption">
+          This figure compares the municipal recycling rate with the circular
+          material use rate for the latest common year available across the
+          EU countries. It is useful for assessing whether stronger recycling
+          outcomes are accompanied by broader progress toward a circular
+          economy. The full scatter shows the overall EU spread by default,
+          while the country filter can be used to focus the comparison on a
+          smaller group.
+        </p>
+      </section>
+
+      <section class="section-card section-card--spotlight" id="spotlight">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="spotlight.kicker">Country Spotlight</p>
+          <h2 data-i18n="spotlight.title">Four contrasting national pathways</h2>
+        </div>
+        <div class="spotlight-grid">
+          <article class="spotlight-card">
+            <h3 data-i18n="spotlight.romaniaTitle">Romania</h3>
+            <p class="spotlight-card__stat" data-i18n="spotlight.romaniaStat">75.7% landfill share</p>
+            <p data-i18n="spotlight.romaniaText">
+              Romania combines relatively low municipal waste generation with
+              very high landfill reliance, making it a key example of why low
+              waste volumes do not automatically imply a more circular system.
+            </p>
+          </article>
+          <article class="spotlight-card">
+            <h3 data-i18n="spotlight.hungaryTitle">Hungary</h3>
+            <p class="spotlight-card__stat" data-i18n="spotlight.hungaryStat">33.3% recycling share</p>
+            <p data-i18n="spotlight.hungaryText">
+              Hungary still relies heavily on landfill, but it performs
+              materially better than Romania on recycling, circularity, and
+              energy recovery, which makes it a useful regional comparison
+              point.
+            </p>
+          </article>
+          <article class="spotlight-card">
+            <h3 data-i18n="spotlight.germanyTitle">Germany</h3>
+            <p class="spotlight-card__stat" data-i18n="spotlight.germanyStat">68.5% recycling share</p>
+            <p data-i18n="spotlight.germanyText">
+              Germany remains one of the strongest recycling performers in the
+              dataset and illustrates how landfill can be reduced through a
+              more diversified mix of recovery pathways.
+            </p>
+          </article>
+          <article class="spotlight-card">
+            <h3 data-i18n="spotlight.swedenTitle">Sweden</h3>
+            <p class="spotlight-card__stat" data-i18n="spotlight.swedenStat">62.8% renewable share</p>
+            <p data-i18n="spotlight.swedenText">
+              Sweden stands out less for waste generation than for how strongly
+              energy transition and energy recovery are integrated into a
+              broader low-landfill model.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-card section-card--explorer" id="profile-lab">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="explorer.kicker">Comparative Explorer</p>
+          <h2 data-i18n="explorer.title">Build a country profile across indicators</h2>
+        </div>
+        <p class="section-text" data-i18n="explorer.intro">
+          The charts above show separate dimensions of performance. This panel
+          brings them together so a reader can inspect one country at a time
+          and compare waste generation, treatment structure, renewable
+          expansion, circularity, and emissions context in a more integrated
+          way. Romania is selected by default so the comparison panel opens
+          from one of the project’s main focal cases.
+        </p>
+        <div class="explorer-toolbar">
+          <label class="explorer-label" for="country-profile-select" data-i18n="explorer.selectLabel">
+            Select country
+          </label>
+          <select id="country-profile-select" class="explorer-select"></select>
+        </div>
+        <div class="explorer-grid">
+          <div class="profile-panel">
+            <div class="profile-panel__header">
+              <p class="profile-panel__kicker" data-i18n="explorer.profileKicker">Profile Summary</p>
+              <h3 id="profile-country-name">Romania</h3>
+            </div>
+            <div class="profile-metrics" id="profile-metrics"></div>
+            <div class="profile-note" id="profile-note"></div>
+          </div>
+          <div class="ranking-panel">
+            <div class="profile-panel__header">
+              <p class="profile-panel__kicker" data-i18n="explorer.tableKicker">Comparative Table</p>
+              <h3 id="ranking-table-title" data-i18n="explorer.tableTitle">Selected indicators side by side</h3>
+            </div>
+            <div class="ranking-table-wrap">
+              <table class="ranking-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="explorer.tableCountry">Country</th>
+                    <th data-i18n="explorer.tableWaste">Waste</th>
+                    <th data-i18n="explorer.tableRecycling">Recycling</th>
+                    <th data-i18n="explorer.tableLandfill">Landfill</th>
+                    <th data-i18n="explorer.tableGhg">GHG</th>
+                  </tr>
+                </thead>
+                <tbody id="ranking-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="story-chapter" id="climate-story">
+        <p class="story-chapter__label" data-i18n="chapters.part3Label">Part III</p>
+        <h2 class="story-chapter__title" data-i18n="chapters.part3Title">Climate context and energy recovery</h2>
+        <p class="story-chapter__text" data-i18n="chapters.part3Text">
+          The final section places waste systems in a broader emissions context
+          and then returns directly to the waste-to-energy question through an
+          interactive comparison of energy recovery trends.
+        </p>
+      </section>
+
+      <section class="section-card" id="chart-5-section">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="figures.fig5Kicker">Figure 5</p>
+          <h2 data-i18n="figures.fig5Heading">How different is the climate context across countries?</h2>
+        </div>
+        <div id="chart-5" class="chart-frame"></div>
+        <p class="chart-description" data-i18n="figures.fig5Caption">
+          This figure adds environmental context through per-capita greenhouse
+          gas emissions. Although the indicator reflects many parts of the
+          economy rather than waste management alone, it helps place national
+          waste and energy patterns within a wider climate-policy context and
+          reminds the reader that waste policy sits inside a larger emissions
+          system. The default ranking shows the full EU pattern, while the
+          country filter allows narrower comparisons when needed.
+        </p>
+      </section>
+
+      <section class="section-card" id="chart-6-section">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="figures.fig6Kicker">Figure 6</p>
+          <h2 data-i18n="figures.fig6Heading">How has energy recovery from waste changed over time?</h2>
+        </div>
+        <div id="chart-6" class="chart-frame"></div>
+        <p class="chart-description" data-i18n="figures.fig6Caption">
+          This interactive figure tracks municipal waste sent to energy
+          recovery over time. It serves as a practical waste-to-energy proxy
+          based on harmonized Eurostat data. The default view includes all
+          available countries, and the filters can be used to compare any
+          smaller set with or without the EU average benchmark. Its purpose is
+          not to prove causal effects, but to show how differently this
+          pathway is used across national waste systems.
+        </p>
+      </section>
+
+      <section class="section-card section-card--methods" id="methods">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="methods.kicker">Methods</p>
+          <h2 data-i18n="methods.title">Data scope, sources, and limitations</h2>
+        </div>
+        <div class="methods-grid">
+          <article>
+            <h3 data-i18n="methods.sourcesTitle">Data sources</h3>
+            <p data-i18n-html="methods.sourcesText">
+              The project uses cleaned extracts from Eurostat and the World
+              Bank. Where the source supports it, the site uses full EU-member
+              coverage rather than a small country sample. Source links and
+              file mappings are documented in <code>DATA_SOURCES.md</code>.
+            </p>
+          </article>
+          <article>
+            <h3 data-i18n="methods.comparabilityTitle">Comparability</h3>
+            <p data-i18n="methods.comparabilityText">
+              The figures are designed for cross-country comparison, but
+              differences in reporting practice, system boundaries, and
+              national infrastructure still matter when interpreting results.
+              One practical example is Figure 2, where Latvia is excluded
+              because the harmonized 2023 treatment breakdown is incomplete for
+              the required operations.
+            </p>
+          </article>
+          <article>
+            <h3 data-i18n="methods.cautionTitle">Interpretive caution</h3>
+            <p data-i18n="methods.cautionText">
+              The charts are descriptive rather than causal. They are intended
+              to identify patterns, contrasts, and useful questions for further
+              analysis rather than definitive policy rankings.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-card section-card--sources" id="sources">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="sources.kicker">Data Sources</p>
+          <h2 data-i18n="sources.title">Official datasets used in this portfolio</h2>
+        </div>
+        <div class="sources-grid">
+          <article class="source-card">
+            <h3 data-i18n="sources.eurostatTitle">Eurostat</h3>
+            <p data-i18n="sources.eurostatText">
+              The core waste, treatment, renewable energy, and circularity
+              indicators come from Eurostat datasets used in cleaned local form
+              for this website.
+            </p>
+            <a href="https://ec.europa.eu/eurostat" target="_blank" rel="noreferrer" data-i18n="sources.visitSource">
+              Visit source
+            </a>
+          </article>
+          <article class="source-card">
+            <h3 data-i18n="sources.worldBankTitle">World Bank</h3>
+            <p data-i18n="sources.worldBankText">
+              The greenhouse gas context indicator is drawn from the World Bank
+              API to provide a recent cross-country environmental comparison.
+            </p>
+            <a href="https://data.worldbank.org/" target="_blank" rel="noreferrer" data-i18n="sources.visitSource">
+              Visit source
+            </a>
+          </article>
+          <article class="source-card">
+            <h3 data-i18n="sources.notesTitle">Project data notes</h3>
+            <p data-i18n-html="sources.notesText">
+              File-level source mapping, indicator notes, and transformation
+              details are documented in <code>DATA_SOURCES.md</code> for
+              transparency and reproducibility.
+            </p>
+            <a href="DATA_SOURCES.md" data-i18n="sources.openNote">Open data note</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-card section-card--contributors" id="contributors">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="contributors.kicker">Project Contributors</p>
+          <h2 data-i18n="contributors.title">About the collaborators behind the project</h2>
+        </div>
+        <div class="contributors-layout">
+          <figure class="contributors-figure">
+            <img
+              src="assets/collaborators-photo.png"
+              alt="Project collaborators Tóth Attila and Szakács Róbert"
+              data-i18n-alt="contributors.photoAlt"
+              class="contributors-image"
+            />
+            <figcaption class="contributors-caption" data-i18n="contributors.caption">
+              Project collaborators: Tóth Attila and Szakács Róbert.
+            </figcaption>
+          </figure>
+          <div class="contributors-copy">
+            <p class="section-text" data-i18n="contributors.text1">
+              This website was developed as a collaborative university project
+              focused on waste systems, energy recovery, and sustainability in
+              Europe. The project combines public data analysis with careful
+              visual storytelling in a format designed to remain readable,
+              transparent, and easy to maintain.
+            </p>
+            <p class="section-text" data-i18n="contributors.text2">
+              The collaborator photo is included here as a project asset rather
+              than as decoration. Its purpose is to make the portfolio feel
+              more complete and more recognizably authored, while preserving a
+              professional academic tone.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card section-card--dashboard" id="dashboard">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="dashboard.kicker">Interactive Dashboard</p>
+          <h2 data-i18n="dashboard.title">Build your own cross-country comparison</h2>
+        </div>
+        <p class="section-text" data-i18n="dashboard.intro">
+          This final dashboard turns the project into an open exploration tool.
+          You can select countries, choose indicators, and move across years to
+          compare patterns visually. The chart highlights broader structure,
+          while the table alongside it reports the exact numeric values used in
+          the current view.
+        </p>
+        <div class="dashboard-shell">
+          <div class="dashboard-controls" data-i18n-aria-label="language.dashboardFilters" aria-label="Dashboard filters">
+            <div class="dashboard-controls__header">
+              <p class="dashboard-controls__title" data-i18n="dashboard.controlsTitle">Choose what to compare</p>
+              <button
+                type="button"
+                class="dashboard-reset"
+                id="dashboard-reset"
+                data-i18n="dashboard.reset"
+              >
+                Reset dashboard
+              </button>
+            </div>
+            <div class="dashboard-controls__grid">
+              <div class="dashboard-control-group">
+                <label class="dashboard-control-group__label" for="dashboard-countries" data-i18n="dashboard.countries">
+                  Countries
+                </label>
+                <select
+                  id="dashboard-countries"
+                  class="dashboard-control-group__select"
+                  multiple
+                ></select>
+                <p class="dashboard-control-group__help" data-i18n="dashboard.countriesHelp">
+                  Open the picker to include one or more countries.
+                </p>
+              </div>
+              <div class="dashboard-control-group">
+                <label class="dashboard-control-group__label" for="dashboard-indicators" data-i18n="dashboard.indicators">
+                  Indicators
+                </label>
+                <select
+                  id="dashboard-indicators"
+                  class="dashboard-control-group__select"
+                  multiple
+                ></select>
+                <p class="dashboard-control-group__help" data-i18n="dashboard.indicatorsHelp">
+                  Choose one indicator for a cleaner comparison, or several for
+                  a faceted dashboard view.
+                </p>
+              </div>
+              <div class="dashboard-control-group">
+                <label class="dashboard-control-group__label" for="dashboard-year-start" data-i18n="dashboard.startYear">
+                  Start year
+                </label>
+                <select id="dashboard-year-start" class="dashboard-inline-select"></select>
+              </div>
+              <div class="dashboard-control-group">
+                <label class="dashboard-control-group__label" for="dashboard-year-end" data-i18n="dashboard.endYear">
+                  End year
+                </label>
+                <select id="dashboard-year-end" class="dashboard-inline-select"></select>
+              </div>
+            </div>
+            <p class="dashboard-note" id="dashboard-note" data-i18n="dashboard.noteDefault">
+              The dashboard will update automatically when the filters change.
+            </p>
+          </div>
+
+          <div class="dashboard-main">
+            <div class="dashboard-visual-panel">
+              <div class="dashboard-meta">
+                <p class="dashboard-meta__kicker" data-i18n="dashboard.currentView">Current View</p>
+                <p class="dashboard-meta__summary" id="dashboard-summary">
+                  Loading dashboard view.
+                </p>
+              </div>
+              <div id="dashboard-chart" class="dashboard-chart-frame"></div>
+            </div>
+            <div class="dashboard-table-panel">
+              <div class="dashboard-table-panel__header">
+                <p class="dashboard-meta__kicker" data-i18n="dashboard.exactValues">Exact Values</p>
+                <p class="dashboard-table-panel__summary" id="dashboard-table-summary">
+                  Loading table.
+                </p>
+              </div>
+              <div class="dashboard-table-wrap">
+                <table class="dashboard-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="dashboard.tableCountry">Country</th>
+                      <th data-i18n="dashboard.tableIndicator">Indicator</th>
+                      <th data-i18n="dashboard.tableYear">Year</th>
+                      <th data-i18n="dashboard.tableValue">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboard-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card section-card--conclusion" id="conclusion">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="conclusion.kicker">Conclusion</p>
+          <h2 data-i18n="conclusion.title">What this portfolio ultimately shows</h2>
+        </div>
+        <p class="section-text" data-i18n="conclusion.text1">
+          Taken together, the figures suggest that municipal waste management
+          in Europe is best understood as part of a broader sustainability
+          system rather than as a standalone technical sector. Landfill
+          reduction, recycling strength, energy recovery, renewable transition,
+          and climate context do not move in perfect lockstep, but they are
+          clearly connected.
+        </p>
+        <p class="section-text" data-i18n="conclusion.text2">
+          That makes waste-to-energy an analytically useful but incomplete lens:
+          it matters most when read alongside wider treatment choices and
+          broader transition indicators. Romania and Hungary illustrate this
+          especially clearly: both sit inside the same EU policy space, yet
+          their treatment mixes and wider sustainability positions still differ
+          meaningfully. As a result, the project aims to show not only what the
+          data say, but how public indicators can be organized into a coherent,
+          EU-wide comparative story.
+        </p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <section class="footer-note-card">
+        <p class="footer-note-card__kicker" data-i18n="footer.noteKicker">Project Note</p>
+        <h2 class="footer-note-card__title" data-i18n="footer.noteTitle">
+          Waste-to-Energy and Sustainability in Europe
+        </h2>
+        <p class="footer-note-card__text" data-i18n="footer.noteText">
+          Prepared as a university data visualization portfolio project with a
+          focus on comparative waste systems, energy recovery, and broader
+          sustainability context. The site is intentionally lightweight,
+          editable, and suitable for static GitHub Pages deployment.
+        </p>
+      </section>
+      <div class="footer-grid">
+        <p data-i18n="footer.text1">
+          Static portfolio site built for a university data visualization
+          project using HTML, CSS, JavaScript, and Vega-Lite.
+        </p>
+        <p data-i18n="footer.text2">
+          Prepared as a beginner-friendly, fully editable GitHub Pages project
+          with transparent public data sources.
+        </p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <script src="data/chart-data.js"></script>
+    <script src="translations.js"></script>
+    <script src="charts/chart-config.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

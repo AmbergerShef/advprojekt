@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ellatasi Lanc Dashboard</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --panel: rgba(255, 252, 247, 0.88);
+      --panel-strong: #fffaf2;
+      --text: #1f2937;
+      --muted: #5b6472;
+      --primary: #0f766e;
+      --primary-soft: #ccfbf1;
+      --accent: #c2410c;
+      --accent-soft: #ffedd5;
+      --border: rgba(31, 41, 55, 0.1);
+      --shadow: 0 18px 40px rgba(31, 41, 55, 0.12);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(194, 65, 12, 0.14), transparent 24%),
+        linear-gradient(180deg, #f7f3eb 0%, var(--bg) 100%);
+      min-height: 100vh;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(255, 250, 242, 0.95), rgba(255, 255, 255, 0.82));
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -60px -60px auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(15, 118, 110, 0.18), transparent 70%);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 0.9rem;
+      letter-spacing: 0.03em;
+    }
+
+    h1 {
+      margin: 18px 0 12px;
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      line-height: 1.02;
+      max-width: 12ch;
+    }
+
+    .lead {
+      max-width: 760px;
+      font-size: 1.08rem;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .stat {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      backdrop-filter: blur(8px);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      margin-top: 24px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      backdrop-filter: blur(10px);
+      transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 1.5rem;
+    }
+
+    .panel p {
+      margin: 0 0 14px;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .chip {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--panel-strong);
+      border: 1px solid var(--border);
+      font-size: 0.94rem;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 14px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 14px;
+      align-items: start;
+      padding: 16px;
+      background: var(--panel-strong);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+    }
+
+    .step {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), #115e59);
+      color: white;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .timeline-item h3,
+    .mini-card h3 {
+      margin: 0 0 6px;
+      font-size: 1.08rem;
+    }
+
+    .timeline-item p,
+    .mini-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .mini-card {
+      padding: 18px;
+      border-radius: 18px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      background: rgba(255, 250, 242, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .toolbar-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .toolbar-label {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .filter-btn,
+    .action-btn {
+      border: 1px solid var(--border);
+      background: #fffdf9;
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font: inherit;
+      transition: background 160ms ease, color 160ms ease, transform 160ms ease, border-color 160ms ease;
+    }
+
+    .filter-btn:hover,
+    .action-btn:hover,
+    .mini-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .filter-btn.active,
+    .action-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .section-hidden {
+      display: none;
+    }
+
+    .focus-card {
+      border-color: rgba(15, 118, 110, 0.35);
+      box-shadow: 0 20px 34px rgba(15, 118, 110, 0.18);
+      transform: translateY(-4px);
+    }
+
+    .chart-layout {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 18px;
+      align-items: stretch;
+      margin-top: 24px;
+    }
+
+    .chart-card {
+      padding: 22px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,250,242,0.85));
+      border: 1px solid var(--border);
+    }
+
+    .chart-stage {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 16px;
+      align-items: end;
+      min-height: 280px;
+      margin-top: 14px;
+    }
+
+    .axis {
+      height: 240px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .bars {
+      height: 240px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(120px, 180px));
+      justify-content: center;
+      gap: 26px;
+      align-items: end;
+      padding: 0 12px 0 0;
+      border-left: 1px solid rgba(31, 41, 55, 0.14);
+      border-bottom: 1px solid rgba(31, 41, 55, 0.14);
+      background:
+        linear-gradient(to top, rgba(31, 41, 55, 0.06) 1px, transparent 1px);
+      background-size: 100% 48px;
+    }
+
+    .bar-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: end;
+      gap: 10px;
+      height: 100%;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 120px;
+      border-radius: 18px 18px 8px 8px;
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      padding-top: 10px;
+      transition: height 280ms ease;
+      min-height: 20px;
+    }
+
+    .bar.orders {
+      background: linear-gradient(180deg, #b45309, #c2410c);
+    }
+
+    .bar.consumer {
+      background: linear-gradient(180deg, #0f766e, #115e59);
+    }
+
+    .bar-label {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .insight-box {
+      padding: 20px;
+      border-radius: 22px;
+      background: var(--panel-strong);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      justify-content: space-between;
+    }
+
+    .insight-box h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .insight-text {
+      color: var(--muted);
+      line-height: 1.65;
+      min-height: 96px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .legend i {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .legend .orders-dot {
+      background: #c2410c;
+    }
+
+    .legend .consumer-dot {
+      background: #0f766e;
+    }
+
+    .model-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+      margin-top: 18px;
+      align-items: start;
+    }
+
+    .control-card,
+    .model-card {
+      padding: 22px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(255,250,242,0.88));
+      border: 1px solid var(--border);
+    }
+
+    .control-row {
+      margin-bottom: 18px;
+    }
+
+    .control-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .control-top strong {
+      font-size: 1rem;
+    }
+
+    .control-value {
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .control-help {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--primary);
+    }
+
+    .model-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .model-stat {
+      padding: 16px;
+      border-radius: 18px;
+      background: var(--panel-strong);
+      border: 1px solid var(--border);
+    }
+
+    .model-stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+    }
+
+    .model-stat strong {
+      font-size: 1.7rem;
+      color: var(--primary);
+    }
+
+    .supply-bars {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 16px;
+      align-items: end;
+      min-height: 260px;
+      margin-top: 18px;
+    }
+
+    .supply-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      align-items: center;
+      gap: 10px;
+      min-height: 260px;
+    }
+
+    .supply-bar {
+      width: 100%;
+      max-width: 110px;
+      border-radius: 18px 18px 8px 8px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      padding-top: 10px;
+      min-height: 24px;
+      transition: height 260ms ease;
+    }
+
+    .bar-retail {
+      background: linear-gradient(180deg, #0f766e, #115e59);
+    }
+
+    .bar-oem {
+      background: linear-gradient(180deg, #1d4ed8, #1e40af);
+    }
+
+    .bar-component {
+      background: linear-gradient(180deg, #b45309, #c2410c);
+    }
+
+    .bar-inventory {
+      background: linear-gradient(180deg, #7c3aed, #6d28d9);
+    }
+
+    .supply-label {
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.94rem;
+    }
+
+    .model-explanation {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: var(--primary-soft);
+      color: #134e4a;
+      line-height: 1.65;
+    }
+
+    .formula-box {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      background: var(--accent-soft);
+      border: 1px solid var(--border);
+    }
+
+    .formula-box h3 {
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+    }
+
+    .formula-box p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .formula-list {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .compare-box {
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+    }
+
+    .compare-box.ai {
+      background: var(--primary-soft);
+    }
+
+    .compare-box.human {
+      background: var(--accent-soft);
+    }
+
+    ul {
+      margin: 12px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 920px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 24px;
+      }
+
+      .chart-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .model-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .toolbar {
+        top: 8px;
+        padding: 14px;
+      }
+
+      .bars {
+        grid-template-columns: repeat(2, minmax(90px, 1fr));
+        gap: 16px;
+      }
+
+      .supply-bars {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <span class="eyebrow">Dashboard a beadandó megoldáshoz</span>
+      <h1>Hogyan lehetne elkerülni a pánikszerű leépítést?</h1>
+      <p class="lead">
+        A videóban a gyártó cég túl nagy jelentőséget adott a hirtelen rendeléscsökkenésnek,
+        miközben a végső fogyasztói kereslet nem zuhant akkorát. A megoldás lényege az, hogy
+        ne csak egy cég a saját adatait nézze, hanem az egész ellátási lánc együtt gondolkodjon.
+      </p>
+
+      <div class="hero-stats">
+        <article class="stat">
+          <strong>50%</strong>
+          rendeléscsökkenés a beszállító oldalán
+        </article>
+        <article class="stat">
+          <strong>20%</strong>
+          körüli visszaesés a végső fogyasztói piacon
+        </article>
+        <article class="stat">
+          <strong>3</strong>
+          együttműködő szereplő a javasolt modellben
+        </article>
+        <article class="stat">
+          <strong>1-2 hónap</strong>
+          türelmi idő az azonnali leépítés helyett
+        </article>
+      </div>
+    </section>
+
+    <section class="toolbar" aria-label="Dashboard vezérlők">
+      <div class="toolbar-group">
+        <span class="toolbar-label">Szűrés:</span>
+        <button class="filter-btn active" type="button" data-filter="all">Összes</button>
+        <button class="filter-btn" type="button" data-filter="problem">Probléma</button>
+        <button class="filter-btn" type="button" data-filter="solution">Megoldás</button>
+        <button class="filter-btn" type="button" data-filter="impact">Eredmény</button>
+      </div>
+      <div class="toolbar-group">
+        <button class="action-btn active" type="button" id="scenarioToggle">Válsághelyzet</button>
+      </div>
+    </section>
+
+    <section class="panel section-block" data-section="impact">
+      <h2>Gyors diagramnézet</h2>
+      <p>
+        Az egyik legfontosabb tanulság, hogy a bejövő rendelések esése nem ugyanaz, mint a végső
+        vásárlói kereslet visszaesése. A gombbal válthatsz a válsághelyzet és a javasolt, stabilabb
+        működés között.
+      </p>
+      <div class="chart-layout">
+        <div class="chart-card">
+          <div class="legend">
+            <span><i class="orders-dot"></i>Beszállítói rendelések visszaesése</span>
+            <span><i class="consumer-dot"></i>Végső fogyasztói kereslet visszaesése</span>
+          </div>
+          <div class="chart-stage">
+            <div class="axis">
+              <span>50%</span>
+              <span>40%</span>
+              <span>30%</span>
+              <span>20%</span>
+              <span>10%</span>
+              <span>0%</span>
+            </div>
+            <div class="bars">
+              <div class="bar-wrap">
+                <div class="bar orders" id="ordersBar" style="height: 240px;">50%</div>
+                <div class="bar-label">Rendelési sokk</div>
+              </div>
+              <div class="bar-wrap">
+                <div class="bar consumer" id="consumerBar" style="height: 96px;">20%</div>
+                <div class="bar-label">Valós kereslet</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <aside class="insight-box">
+          <div>
+            <h3 id="scenarioTitle">Mit mutat a válsághelyzet?</h3>
+            <p class="insight-text" id="scenarioText">
+              A rendelési adatok alapján úgy tűnik, mintha a piac fele eltűnt volna, pedig a végső
+              kereslet csak kisebb mértékben esett vissza. Ez könnyen pánikszerű leépítéshez vezethet.
+            </p>
+          </div>
+          <div class="chips">
+            <span class="chip">Kattintható szűrők</span>
+            <span class="chip">Váltható forgatókönyv</span>
+            <span class="chip">Prezentációs nézet</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="panel section-block" data-section="impact" style="margin-top: 24px;">
+      <h2>Interaktív ellátásilánc-modell</h2>
+      <p>
+        Itt te állíthatod a főbb gazdasági számokat. A modell azt mutatja meg egyszerűen, hogy a
+        végső kereslet, a GDP változása és a raktárkészlet-csökkentés hogyan hat a kiskereskedelemre,
+        az OEM-gyártóra és a komponensgyártóra.
+      </p>
+
+      <div class="model-grid">
+        <aside class="control-card">
+          <div class="control-row">
+            <div class="control-top">
+              <strong>GDP-változás</strong>
+              <span class="control-value" id="gdpValue">-2%</span>
+            </div>
+            <div class="control-help">A gazdasági környezet mennyire támogatja vagy fogja vissza a keresletet.</div>
+            <input id="gdpInput" type="range" min="-10" max="10" step="1" value="-2">
+          </div>
+
+          <div class="control-row">
+            <div class="control-top">
+              <strong>Végső kereslet változása</strong>
+              <span class="control-value" id="demandValue">-20%</span>
+            </div>
+            <div class="control-help">Ennyivel vesznek többet vagy kevesebbet a fogyasztók a boltokban.</div>
+            <input id="demandInput" type="range" min="-40" max="20" step="1" value="-20">
+          </div>
+
+          <div class="control-row">
+            <div class="control-top">
+              <strong>Készletleépítés erőssége</strong>
+              <span class="control-value" id="inventoryValue">60%</span>
+            </div>
+            <div class="control-help">Megmutatja, mennyire próbálják a kereskedők és a köztes cégek leépíteni a készleteiket.</div>
+            <input id="inventoryInput" type="range" min="0" max="100" step="5" value="60">
+          </div>
+
+          <div class="control-row">
+            <div class="control-top">
+              <strong>Kiinduló készletszint</strong>
+              <span class="control-value" id="stockValue">8 hét</span>
+            </div>
+            <div class="control-help">Mennyi időre elég raktárkészlet van a lánc középső és alsó szintjein.</div>
+            <input id="stockInput" type="range" min="2" max="12" step="1" value="8">
+          </div>
+        </aside>
+
+        <div class="model-card">
+          <div class="model-stats">
+            <div class="model-stat">
+              <span>Javasolt kisker-újrarendelés</span>
+              <strong id="retailStat">80%</strong>
+            </div>
+            <div class="model-stat">
+              <span>Javasolt OEM-termelés</span>
+              <strong id="oemStat">62%</strong>
+            </div>
+            <div class="model-stat">
+              <span>Javasolt komponens-termelés</span>
+              <strong id="componentStat">54%</strong>
+            </div>
+            <div class="model-stat">
+              <span>Célzott készlettartás</span>
+              <strong id="targetStockStat">5.4 hét</strong>
+            </div>
+          </div>
+
+          <div class="supply-bars">
+            <div class="supply-col">
+              <div class="supply-bar bar-retail" id="retailBar" style="height: 176px;">80%</div>
+              <div class="supply-label">Kisker-rendelés</div>
+            </div>
+            <div class="supply-col">
+              <div class="supply-bar bar-oem" id="oemBar" style="height: 136px;">62%</div>
+              <div class="supply-label">OEM-termelés</div>
+            </div>
+            <div class="supply-col">
+              <div class="supply-bar bar-component" id="componentBar" style="height: 118px;">54%</div>
+              <div class="supply-label">Komponensgyártás</div>
+            </div>
+            <div class="supply-col">
+              <div class="supply-bar bar-inventory" id="stockBar" style="height: 108px;">5.4 hét</div>
+              <div class="supply-label">Ajánlott készlettartás</div>
+            </div>
+          </div>
+
+          <div class="model-explanation" id="modelExplanation">
+            A modell alapján most erős készletleépítés látszik, ezért a komponensgyártó oldalán a
+            termelés jobban visszaesik, mint maga a végső kereslet. Ez pontosan azt mutatja, ami a
+            videóban is probléma volt.
+          </div>
+
+          <div class="formula-box">
+            <h3>Mi alapján számol a modell?</h3>
+            <p>
+              Ez a rész egy egyszerű szemléltető modell. Nem egy vállalati ERP-rendszer pontos
+              képleteit használja, hanem azt mutatja meg, hogy a GDP, a végső kereslet és a
+              készletleépítés együtt hogyan tolhatja lejjebb vagy tarthatja stabilan a termelést
+              az ellátási lánc különböző szintjein.
+            </p>
+            <ul class="formula-list">
+              <li>A kisker-újrarendelés alapja a 100%-os normál szint, amit módosít a végső kereslet változása és kisebb mértékben a GDP változása.</li>
+              <li>Az OEM-termelés a kisker-újrarendelésből indul ki, de ezt tovább csökkenti a készletleépítés erőssége és a kiinduló készletszint.</li>
+              <li>A komponensgyártó termelése az OEM szintjét követi, de a készletleépítés miatt ott gyakran még nagyobb visszaesés jelenik meg.</li>
+              <li>Az ajánlott készlettartás annál alacsonyabb lesz, minél erősebb a készletleépítés, viszont stabilabb gazdasági helyzetben magasabb szinten maradhat.</li>
+            </ul>
+            <p>
+              Egyszerűen: ha a végső kereslet csak kicsit esik, de minden szereplő egyszerre kezd
+              raktárt leépíteni, akkor a lánc elején lévő gyártó sokkal nagyobb visszaesést fog
+              érezni. A modell ezt a hatást szemlélteti.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid section-block" data-section="problem">
+      <article class="panel">
+        <h2>A probléma röviden</h2>
+        <p>
+          A komponensgyártó csak azt látta, hogy hirtelen visszaestek a rendelések, és ebből arra
+          következtethetett volna, hogy tartósan összeomlik a piac. Valójában a kereskedők és a
+          köztes cégek inkább készletet csökkentettek, mert féltek a válságtól.
+        </p>
+        <p>
+          Emiatt az ellátási lánc elején lévő cégek sokkal nagyobb visszaesést éreztek, mint amit
+          a végső vásárlók tényleges viselkedése indokolt volna.
+        </p>
+        <div class="chips">
+          <span class="chip">Rosszul értelmezett adatok</span>
+          <span class="chip">Készletleépítés</span>
+          <span class="chip">Túlfokozott reakció</span>
+          <span class="chip">Felesleges elbocsátás veszélye</span>
+        </div>
+      </article>
+
+      <aside class="panel">
+        <h2>Kik működnének együtt?</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="step">1</div>
+            <div>
+              <h3>Komponensgyártó</h3>
+              <p>Látja a bejövő rendeléseit, de önmagában ez nem elég a jó döntéshez.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="step">2</div>
+            <div>
+              <h3>Elektronikai gyártó</h3>
+              <p>Összeköti a beszállítót a piac középső szintjével, és jelzi a valós igényeket.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="step">3</div>
+            <div>
+              <h3>Kereskedő vagy áruházlánc</h3>
+              <p>Megmutatja, mennyit vásárolnak ténylegesen a végső fogyasztók.</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="mini-grid section-block" data-section="solution">
+      <article class="mini-card" data-focus="adatmegosztas">
+        <h3>1. Közös adatmegosztás</h3>
+        <p>
+          A cégek rendszeresen megosztják egymással az eladási adatokat, a raktárkészletet és a
+          következő hónapokra várható rendeléseiket.
+        </p>
+      </article>
+      <article class="mini-card" data-focus="kereslet">
+        <h3>2. Nem csak a rendeléseket nézzük</h3>
+        <p>
+          A döntés alapja ne csak az legyen, mennyi rendelést kap a gyár, hanem az is, hogy mennyit
+          vesznek a végső fogyasztók az üzletekben.
+        </p>
+      </article>
+      <article class="mini-card" data-focus="turelmi-ido">
+        <h3>3. Türelmi időszak</h3>
+        <p>
+          Ha hirtelen nagy visszaesés jön, a cég ne azonnal bocsásson el, hanem legyen egy rövid
+          elemzési időszak, amikor ellenőrzik, mi a valódi ok.
+        </p>
+      </article>
+      <article class="mini-card" data-focus="enyhebb-reakcio">
+        <h3>4. Enyhébb reakció</h3>
+        <p>
+          Elbocsátás helyett először ideiglenes műszakcsökkentést, szabadságolást vagy átcsoportosítást
+          lehet alkalmazni.
+        </p>
+      </article>
+    </section>
+
+    <section class="panel section-block" data-section="solution" style="margin-top: 24px;">
+      <h2>Javasolt folyamat egyszerűen</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="step">A</div>
+          <div>
+            <h3>Adatok összegyűjtése</h3>
+            <p>A három szereplő összegyűjti a saját eladási, rendelési és készletadatait.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="step">B</div>
+          <div>
+            <h3>Közös értelmezés</h3>
+            <p>Megnézik, hogy a visszaesés valódi keresletcsökkenés, vagy csak ideiglenes készletleépítés.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="step">C</div>
+          <div>
+            <h3>Fokozatos döntés</h3>
+            <p>Először enyhébb lépések vannak, és csak tartós probléma esetén jönnek a komolyabb intézkedések.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="step">D</div>
+          <div>
+            <h3>Gyors visszaállítás</h3>
+            <p>Ha a piac magához tér, a cégnek már megvan a dolgozói állománya, és nem kell újraépíteni mindent.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel section-block" data-section="impact" style="margin-top: 24px;">
+      <h2>Miért lenne ez jobb?</h2>
+      <ul>
+        <li>Csökkenti a pánikszerű döntések és a túlzott leépítés esélyét.</li>
+        <li>Pontosabban mutatja meg, hogy mi történik valójában a piacon.</li>
+        <li>Megőrzi a tapasztalt munkaerőt, amit később nehéz lenne pótolni.</li>
+        <li>Olcsóbb és stabilabb, mint embereket elküldeni, majd pár hónap múlva újra felvenni.</li>
+      </ul>
+    </section>
+
+    <p class="footer-note">
+      Ez a dashboard egy egyszerű, HTML-alapú bemutatóoldal, amely vizuálisan összefoglalja a feladat megoldását.
+    </p>
+  </main>
+  <script>
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const sections = document.querySelectorAll(".section-block");
+    const actionButton = document.getElementById("scenarioToggle");
+    const ordersBar = document.getElementById("ordersBar");
+    const consumerBar = document.getElementById("consumerBar");
+    const scenarioTitle = document.getElementById("scenarioTitle");
+    const scenarioText = document.getElementById("scenarioText");
+    const focusCards = document.querySelectorAll(".mini-card");
+    const gdpInput = document.getElementById("gdpInput");
+    const demandInput = document.getElementById("demandInput");
+    const inventoryInput = document.getElementById("inventoryInput");
+    const stockInput = document.getElementById("stockInput");
+    const gdpValue = document.getElementById("gdpValue");
+    const demandValue = document.getElementById("demandValue");
+    const inventoryValue = document.getElementById("inventoryValue");
+    const stockValue = document.getElementById("stockValue");
+    const retailStat = document.getElementById("retailStat");
+    const oemStat = document.getElementById("oemStat");
+    const componentStat = document.getElementById("componentStat");
+    const targetStockStat = document.getElementById("targetStockStat");
+    const retailBar = document.getElementById("retailBar");
+    const oemBar = document.getElementById("oemBar");
+    const componentBar = document.getElementById("componentBar");
+    const stockBar = document.getElementById("stockBar");
+    const modelExplanation = document.getElementById("modelExplanation");
+
+    const scenarios = {
+      crisis: {
+        title: "Mit mutat a válsághelyzet?",
+        text: "A rendelési adatok alapján úgy tűnik, mintha a piac fele eltűnt volna, pedig a végső kereslet csak kisebb mértékben esett vissza. Ez könnyen pánikszerű leépítéshez vezethet.",
+        orders: 50,
+        consumer: 20,
+        button: "Válsághelyzet"
+      },
+      managed: {
+        title: "Mit mutat a közös tervezés?",
+        text: "Ha a cégek megosztják egymással az adatokat, jobban látszik a valós kereslet. Ilyenkor enyhébb reakció is elég lehet, és a felesleges leépítés elkerülhető vagy mérsékelhető.",
+        orders: 24,
+        consumer: 18,
+        button: "Koordináció aktív"
+      }
+    };
+
+    let currentScenario = "crisis";
+
+    function setScenario(mode) {
+      const data = scenarios[mode];
+      const scale = 4.8;
+      ordersBar.style.height = `${data.orders * scale}px`;
+      consumerBar.style.height = `${data.consumer * scale}px`;
+      ordersBar.textContent = `${data.orders}%`;
+      consumerBar.textContent = `${data.consumer}%`;
+      scenarioTitle.textContent = data.title;
+      scenarioText.textContent = data.text;
+      actionButton.textContent = data.button;
+      actionButton.classList.toggle("active", mode === "managed");
+    }
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = button.dataset.filter;
+
+        filterButtons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+
+        sections.forEach((section) => {
+          const matches = filter === "all" || section.dataset.section === filter;
+          section.classList.toggle("section-hidden", !matches);
+        });
+      });
+    });
+
+    actionButton.addEventListener("click", () => {
+      currentScenario = currentScenario === "crisis" ? "managed" : "crisis";
+      setScenario(currentScenario);
+    });
+
+    focusCards.forEach((card) => {
+      card.addEventListener("click", () => {
+        const alreadyActive = card.classList.contains("focus-card");
+        focusCards.forEach((item) => item.classList.remove("focus-card"));
+        if (!alreadyActive) {
+          card.classList.add("focus-card");
+        }
+      });
+    });
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function formatSignedPercent(value) {
+      return `${value > 0 ? "+" : ""}${value}%`;
+    }
+
+    function updateModel() {
+      const gdp = Number(gdpInput.value);
+      const demand = Number(demandInput.value);
+      const inventory = Number(inventoryInput.value);
+      const stockWeeks = Number(stockInput.value);
+
+      gdpValue.textContent = formatSignedPercent(gdp);
+      demandValue.textContent = formatSignedPercent(demand);
+      inventoryValue.textContent = `${inventory}%`;
+      stockValue.textContent = `${stockWeeks} hét`;
+
+      const retailReorder = clamp(100 + demand + (gdp * 0.8), 45, 120);
+      const destockImpact = inventory * (stockWeeks / 8);
+      const oemProduction = clamp(retailReorder - (destockImpact * 0.35), 35, 120);
+      const componentProduction = clamp(oemProduction - (destockImpact * 0.22), 25, 120);
+      const targetStock = clamp(stockWeeks - (inventory / 25) + (gdp > 0 ? 0.6 : gdp * 0.08), 2, 12);
+
+      retailStat.textContent = `${retailReorder.toFixed(0)}%`;
+      oemStat.textContent = `${oemProduction.toFixed(0)}%`;
+      componentStat.textContent = `${componentProduction.toFixed(0)}%`;
+      targetStockStat.textContent = `${targetStock.toFixed(1)} hét`;
+
+      retailBar.style.height = `${retailReorder * 2.2}px`;
+      oemBar.style.height = `${oemProduction * 2.2}px`;
+      componentBar.style.height = `${componentProduction * 2.2}px`;
+      stockBar.style.height = `${targetStock * 20}px`;
+
+      retailBar.textContent = `${retailReorder.toFixed(0)}%`;
+      oemBar.textContent = `${oemProduction.toFixed(0)}%`;
+      componentBar.textContent = `${componentProduction.toFixed(0)}%`;
+      stockBar.textContent = `${targetStock.toFixed(1)} hét`;
+
+      let explanation = "";
+
+      if (inventory >= 60 && stockWeeks >= 7) {
+        explanation = "A modell szerint erős készletleépítés történik. Ilyenkor a komponensgyártó termelése sokkal jobban eshet vissza, mint a végső kereslet, mert a lánc többi szereplője a raktárból él.";
+      } else if (demand >= -5 && gdp >= 0) {
+        explanation = "A modell szerint a végső kereslet közel stabil, és a GDP sem húzza le a piacot. Ilyenkor nincs értelme drasztikus leépítésben gondolkodni, inkább egy mérsékelt, követő termelési szint a jó.";
+      } else if (demand <= -25) {
+        explanation = "Itt már valódi keresletcsökkenés látszik. Ilyenkor a termelést tényleg vissza kell fogni, de akkor is jobb fokozatosan igazodni, mint egyetlen havi adat alapján túlreagálni a helyzetet.";
+      } else {
+        explanation = "A modell azt mutatja, hogy a termelésnek kisebb késéssel és enyhébb módon kell követnie a piacot. Minél jobb az adatmegosztás, annál kevesebb felesleges ingadozás jelenik meg az ellátási láncban.";
+      }
+
+      modelExplanation.textContent = explanation;
+    }
+
+    [gdpInput, demandInput, inventoryInput, stockInput].forEach((input) => {
+      input.addEventListener("input", updateModel);
+    });
+
+    setScenario(currentScenario);
+    updateModel();
+  </script>
+</body>
+</html>

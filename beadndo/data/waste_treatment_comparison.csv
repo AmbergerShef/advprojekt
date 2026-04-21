@@ -1,0 +1,79 @@
+country,treatment_type,share_percent,year
+Austria,Incineration with energy recovery,35.4,2023
+Austria,Landfill,1.8,2023
+Austria,Recycling,62.3,2023
+Belgium,Incineration with energy recovery,44.0,2023
+Belgium,Landfill,0.1,2023
+Belgium,Recycling,54.4,2023
+Bulgaria,Incineration with energy recovery,3.3,2023
+Bulgaria,Landfill,44.3,2023
+Bulgaria,Recycling,16.5,2023
+Croatia,Incineration with energy recovery,1.7,2023
+Croatia,Landfill,51.8,2023
+Croatia,Recycling,36.0,2023
+Cyprus,Incineration with energy recovery,2.4,2023
+Cyprus,Landfill,61.4,2023
+Cyprus,Recycling,15.3,2023
+Czechia,Incineration with energy recovery,14.1,2023
+Czechia,Landfill,42.4,2023
+Czechia,Recycling,43.5,2023
+Denmark,Incineration with energy recovery,51.0,2023
+Denmark,Landfill,1.8,2023
+Denmark,Recycling,46.0,2023
+Estonia,Incineration with energy recovery,42.6,2023
+Estonia,Landfill,0.5,2023
+Estonia,Recycling,38.1,2023
+Finland,Incineration with energy recovery,53.8,2023
+Finland,Landfill,0.4,2023
+Finland,Recycling,44.7,2023
+France,Incineration with energy recovery,32.6,2023
+France,Landfill,21.3,2023
+France,Recycling,39.5,2023
+Germany,Incineration with energy recovery,29.2,2023
+Germany,Landfill,1.0,2023
+Germany,Recycling,68.5,2023
+Greece,Incineration with energy recovery,1.7,2023
+Greece,Landfill,80.7,2023
+Greece,Recycling,17.2,2023
+Hungary,Incineration with energy recovery,12.4,2023
+Hungary,Landfill,54.3,2023
+Hungary,Recycling,33.3,2023
+Ireland,Incineration with energy recovery,42.5,2023
+Ireland,Landfill,14.4,2023
+Ireland,Recycling,41.2,2023
+Italy,Incineration with energy recovery,18.4,2023
+Italy,Landfill,16.0,2023
+Italy,Recycling,50.7,2023
+Lithuania,Incineration with energy recovery,40.4,2023
+Lithuania,Landfill,7.8,2023
+Lithuania,Recycling,48.7,2023
+Luxembourg,Incineration with energy recovery,40.7,2023
+Luxembourg,Landfill,2.9,2023
+Luxembourg,Recycling,56.4,2023
+Malta,Incineration with energy recovery,2.7,2023
+Malta,Landfill,73.6,2023
+Malta,Recycling,16.9,2023
+Netherlands,Incineration with energy recovery,39.6,2023
+Netherlands,Landfill,1.5,2023
+Netherlands,Recycling,57.8,2023
+Poland,Incineration with energy recovery,19.9,2023
+Poland,Landfill,30.2,2023
+Poland,Recycling,27.5,2023
+Portugal,Incineration with energy recovery,18.2,2023
+Portugal,Landfill,56.4,2023
+Portugal,Recycling,30.5,2023
+Romania,Incineration with energy recovery,5.2,2023
+Romania,Landfill,75.7,2023
+Romania,Recycling,12.5,2023
+Slovakia,Incineration with energy recovery,7.6,2023
+Slovakia,Landfill,38.8,2023
+Slovakia,Recycling,50.2,2023
+Slovenia,Incineration with energy recovery,11.4,2023
+Slovenia,Landfill,9.5,2023
+Slovenia,Recycling,59.6,2023
+Spain,Incineration with energy recovery,9.9,2023
+Spain,Landfill,46.8,2023
+Spain,Recycling,43.1,2023
+Sweden,Incineration with energy recovery,58.7,2023
+Sweden,Landfill,1.0,2023
+Sweden,Recycling,39.3,2023

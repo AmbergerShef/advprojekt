@@ -8,11 +8,12 @@ const homepageTranslations = {
     heroTitle: "Szakács Róbert vagyok.",
     heroLead:
       "Egyetemi projekteken, adatvizualizációs ötleteken és webes megoldásokon dolgozom. Ez az oldalam a saját online kiindulópontom, ahol a fontosabb munkáimat és projektjeimet mutatom be.",
-    heroButtons: ["Microsoft vs Apple projekt", "További részletek"],
+    heroButtons: ["Waste-to-Energy projekt", "További részletek"],
     featuredLabel: "Most kiemelt projekt",
+    featuredTitle: "Waste-to-Energy and Sustainability in Europe",
     featuredText:
-      "Pénzügyi adatokra épülő összehasonlító oldal hivatalos vállalati jelentések, külön adatfájl és interaktív mini vizualizációk felhasználásával.",
-    features: ["Külön JSON adatfájl", "Interaktív webes megjelenítés", "Összehasonlító diagramok"],
+      "Interaktív adatvizualizációs projekt az európai hulladékkezelésről, energia-visszanyerésről és fenntarthatósági mutatókról, többnyelvű felülettel és helyi, tisztított adatállományokkal.",
+    features: ["Többnyelvű projektoldal", "Interaktív diagramok és szűrők", "Eurostat és World Bank adatok"],
     aboutEyebrow: "Rólam",
     aboutTitle: "Adatok, dizájn és történetmesélés egy helyen",
     aboutCards: [
@@ -22,12 +23,18 @@ const homepageTranslations = {
     ],
     projectsEyebrow: "Projektek",
     projectsTitle: "Válogatás a kiemelt munkáimból",
-    projectTags: ["Kész projektoldal", "Korábbi projekt"],
+    projectTags: ["Legfrissebb projekt", "Kész projektoldal", "Korábbi projekt"],
+    projectTitles: [
+      "Waste-to-Energy and Sustainability in Europe",
+      "Microsoft vs Apple",
+      "Romániai városok népességváltozása"
+    ],
     projectDescriptions: [
+      "Adatvizualizációs portfólióprojekt az európai települési hulladékról, kezelési módokról, körforgásosságról és fenntarthatósági összefüggésekről.",
       "Pénzügyi adatokra épülő összehasonlító weboldal, amely a két vállalat árbevételét, profitabilitását és üzleti szerkezetét mutatja be.",
       "Egy korábbi adatvizualizációs projekt, amely a romániai városok népességváltozását mutatja be 2010 és 2019 között."
     ],
-    projectButtons: ["Megnyitás", "Megnyitás"],
+    projectButtons: ["Megnyitás", "Megnyitás", "Megnyitás"],
     gameEyebrow: "Játék",
     gameTitle: "Last Ring Arena",
     gameLead:
@@ -51,11 +58,12 @@ const homepageTranslations = {
     heroTitle: "I'm Róbert Szakács.",
     heroLead:
       "I work on university projects, data visualization ideas, and web solutions. This page is my personal online starting point where I showcase my key work and projects.",
-    heroButtons: ["Microsoft vs Apple project", "More details"],
+    heroButtons: ["Waste-to-Energy project", "More details"],
     featuredLabel: "Featured project",
+    featuredTitle: "Waste-to-Energy and Sustainability in Europe",
     featuredText:
-      "A financial comparison site built from official company reports, a separate data file, and interactive mini visualizations.",
-    features: ["Separate JSON data file", "Interactive web presentation", "Comparative charts"],
+      "An interactive data visualization project on European waste treatment, energy recovery, and sustainability indicators with a multilingual interface and cleaned local datasets.",
+    features: ["Multilingual project site", "Interactive charts and filters", "Eurostat and World Bank data"],
     aboutEyebrow: "About",
     aboutTitle: "Data, design, and storytelling in one place",
     aboutCards: [
@@ -65,12 +73,18 @@ const homepageTranslations = {
     ],
     projectsEyebrow: "Projects",
     projectsTitle: "A selection of my featured work",
-    projectTags: ["Finished project", "Earlier project"],
+    projectTags: ["Newest project", "Finished project", "Earlier project"],
+    projectTitles: [
+      "Waste-to-Energy and Sustainability in Europe",
+      "Microsoft vs Apple",
+      "Population change in Romanian cities"
+    ],
     projectDescriptions: [
+      "A data visualization portfolio project about European municipal waste, treatment pathways, circularity, and sustainability relationships.",
       "A comparison website based on financial data that presents the two companies' revenue, profitability, and business structure.",
       "An earlier data visualization project showing population change in Romanian cities between 2010 and 2019."
     ],
-    projectButtons: ["Open", "Open"],
+    projectButtons: ["Open", "Open", "Open"],
     gameEyebrow: "Game",
     gameTitle: "Last Ring Arena",
     gameLead:
@@ -94,11 +108,12 @@ const homepageTranslations = {
     heroTitle: "Sunt Róbert Szakács.",
     heroLead:
       "Lucrez la proiecte universitare, idei de vizualizare a datelor și soluții web. Această pagină este punctul meu personal de pornire online, unde îmi prezint proiectele și lucrările importante.",
-    heroButtons: ["Proiectul Microsoft vs Apple", "Mai multe detalii"],
+    heroButtons: ["Proiectul Waste-to-Energy", "Mai multe detalii"],
     featuredLabel: "Proiect evidențiat",
+    featuredTitle: "Waste-to-Energy and Sustainability in Europe",
     featuredText:
-      "O pagină de comparație financiară bazată pe rapoarte oficiale ale companiilor, un fișier de date separat și mini-vizualizări interactive.",
-    features: ["Fișier JSON separat", "Prezentare web interactivă", "Grafice comparative"],
+      "Un proiect interactiv de vizualizare a datelor despre tratarea deșeurilor în Europa, recuperarea energiei și indicatorii de sustenabilitate, cu interfață multilingvă și seturi de date locale curățate.",
+    features: ["Site de proiect multilingv", "Grafice și filtre interactive", "Date Eurostat și World Bank"],
     aboutEyebrow: "Despre mine",
     aboutTitle: "Date, design și storytelling într-un singur loc",
     aboutCards: [
@@ -108,12 +123,18 @@ const homepageTranslations = {
     ],
     projectsEyebrow: "Proiecte",
     projectsTitle: "O selecție a lucrărilor mele reprezentative",
-    projectTags: ["Proiect finalizat", "Proiect anterior"],
+    projectTags: ["Cel mai nou proiect", "Proiect finalizat", "Proiect anterior"],
+    projectTitles: [
+      "Waste-to-Energy and Sustainability in Europe",
+      "Microsoft vs Apple",
+      "Evoluția populației în orașele din România"
+    ],
     projectDescriptions: [
+      "Un proiect-portofoliu de vizualizare a datelor despre deșeurile municipale din Europa, metodele de tratare, circularitate și relațiile cu sustenabilitatea.",
       "Un site de comparație bazat pe date financiare care prezintă veniturile, profitabilitatea și structura de afaceri a celor două companii.",
       "Un proiect anterior de vizualizare a datelor care prezintă schimbarea populației în orașele din România între 2010 și 2019."
     ],
-    projectButtons: ["Deschide", "Deschide"],
+    projectButtons: ["Deschide", "Deschide", "Deschide"],
     gameEyebrow: "Joc",
     gameTitle: "Last Ring Arena",
     gameLead:
@@ -254,10 +275,13 @@ const applyHomepageLanguage = (lang) => {
   const heroButtons = document.querySelectorAll(".hero-actions .button");
   heroButtons[0].textContent = copy.heroButtons[0];
   heroButtons[1].textContent = copy.heroButtons[1];
+  heroButtons[0].setAttribute("href", "beadndo/index.html");
+  heroButtons[1].setAttribute("href", "#projektek");
 
   document.querySelector(".hero-card .card-label").textContent = copy.featuredLabel;
+  document.querySelector(".hero-card h2").textContent = copy.featuredTitle;
   document.querySelector(".hero-card p:not(.card-label)").textContent = copy.featuredText;
-  document.querySelectorAll(".feature-list li").forEach((item, index) => {
+  document.querySelectorAll(".hero-card .feature-list li").forEach((item, index) => {
     item.textContent = copy.features[index];
   });
 
@@ -278,6 +302,7 @@ const applyHomepageLanguage = (lang) => {
 
   document.querySelectorAll(".project-card").forEach((card, index) => {
     card.querySelector(".project-tag").textContent = copy.projectTags[index];
+    card.querySelector("h3").textContent = copy.projectTitles[index];
     card.querySelector("p").textContent = copy.projectDescriptions[index];
     card.querySelector(".button").textContent = copy.projectButtons[index];
   });
