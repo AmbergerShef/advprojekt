@@ -11,6 +11,10 @@ const translations = {
       indicators: "Indicators",
       indicatorsHelp:
         "One indicator gives a cleaner comparison, while several indicators create a faceted dashboard view.",
+      insightKicker: "Analytical Readout",
+      insightTitle: "What stands out in this selection",
+      insightIntro:
+        "The dashboard converts the visible rows into a compact comparative interpretation.",
       startYear: "Start year",
       endYear: "End year",
       noteAutoUpdate: "The chart and table update automatically as you change the filters.",
@@ -27,7 +31,64 @@ const translations = {
       chartDenseTitle: "This dashboard view is too dense to plot clearly.",
       chartDenseText: "Try fewer countries, fewer indicators, or a shorter year range.",
       chartErrorTitle: "Dashboard chart could not be loaded.",
-      chartErrorText: "Check the current dashboard selection and chart configuration."
+      chartErrorText: "Check the current dashboard selection and chart configuration.",
+      insightHeadlineSingleIndicator:
+        "{country} leads the current {indicator} comparison, with a visible gap of {gap} over {laggard}.",
+      insightHeadlineBalanced:
+        "{country} presents the strongest overall profile across the currently selected indicators.",
+      insightHeadlineSingleCountry:
+        "{country} is shown here as a focused profile rather than a cross-country ranking.",
+      cardTopPerformer: "Top performer",
+      cardTopPerformerNote: "{indicator}: {value}",
+      cardBiggestGap: "Biggest gap",
+      cardBiggestGapNote: "{indicator}: {leader} versus {laggard}",
+      cardStandoutCountry: "Standout country",
+      cardStandoutCountryNote: "Leads {count} visible indicators.",
+      cardBalancedProfile: "Most balanced profile",
+      cardBalancedProfileNote: "Strongest average rank across {count} indicators.",
+      cardProfileType: "Profile type",
+      cardProfileTypeNote: "Interpretation from the visible indicator mix.",
+      cardNeedsImprovement: "Needs improvement",
+      cardCoverage: "Coverage",
+      cardCoverageValue: "{indicators} indicators across {years} years",
+      cardCoverageNote: "{count} visible observations in the current view.",
+      narrativeLeader:
+        "{country} leads {indicator} at {value}, while {laggard} records the weakest visible result at {laggardValue}.",
+      narrativeGap:
+        "The widest separation appears in {indicator}, where the leading country sits {gap} away from the weakest visible result and {avgGapPercent} ahead of the selected-group average.",
+      narrativeTrendImprovement:
+        "{country} shows the clearest in-range improvement in {indicator}, changing by {delta} between {startYear} and {endYear}.",
+      narrativeTrendRank:
+        "Within the same comparison set, {country} moves from rank {startRank} to rank {endRank}.",
+      narrativePairRecyclingLandfill:
+        "{country} combines above-group recycling with below-group landfill, suggesting a comparatively mature treatment mix in the current selection.",
+      narrativePairCircularity:
+        "{country} leads circular-material use despite only mid-pack municipal recycling, implying that broader material efficiency extends beyond waste collection alone.",
+      narrativePairEnergyLandfill:
+        "{country} pairs strong energy recovery with still-elevated landfill, pointing to a transition model that has not fully displaced disposal.",
+      narrativeSingleCountryStrength:
+        "{country}'s clearest visible strength is {indicator} at {value}.",
+      narrativeSingleCountryWeakness:
+        "{country}'s most evident pressure point is {indicator} at {value}.",
+      narrativeCoverage:
+        "This view draws on {count} visible observations across {countries} countries and {indicators} indicators.",
+      profileMixed: "mixed transition profile",
+      profileLandfill: "landfill-reliant profile",
+      profileRecycling: "recycling-led profile",
+      profileLowLandfill: "low-landfill, recovery-oriented profile",
+      profileRecovery: "recovery-led transition profile"
+    },
+    dashboardInsights: {
+      excellence: {
+        municipal_waste_per_capita: "waste-pressure management",
+        recycling_share: "recycling performance",
+        landfill_share: "landfill reduction",
+        energy_recovery_share: "recovery-system depth",
+        renewable_energy_share: "renewable-energy transition",
+        circular_material_use_rate: "circular-material efficiency",
+        ghg_per_capita: "low-emissions profile",
+        energy_recovery_level: "energy-recovery capacity"
+      }
     },
     dashboardIndicators: {
       municipal_waste_per_capita: "Municipal waste per capita",
@@ -323,6 +384,10 @@ const translations = {
       title: "Állíts össze saját országközi összehasonlítást",
       intro:
         "Ez a záró irányítópult nyitott feltáró eszközzé alakítja a projektet. Az országok, mutatók és évek kiválasztásával szabadon összehasonlíthatók a mintázatok. A grafikon a szerkezetet mutatja, a mellette lévő tábla pedig a pontos numerikus értékeket adja vissza.",
+      insightKicker: "Elemző összegzés",
+      insightTitle: "Mi emelkedik ki ebben a kiválasztásban",
+      insightIntro:
+        "Az irányítópult a látható sorokat rövid, összehasonlító értelmezéssé alakítja.",
       controlsTitle: "Válaszd ki, mit szeretnél összevetni",
       reset: "Irányítópult alaphelyzet",
       countries: "Országok",
@@ -356,7 +421,64 @@ const translations = {
       chartDenseTitle: "Ez az irányítópult-nézet túl sűrű a jól olvasható megjelenítéshez.",
       chartDenseText: "Próbálj kevesebb országot, kevesebb mutatót vagy rövidebb idősávot választani.",
       chartErrorTitle: "Az irányítópult grafikonja nem tölthető be.",
-      chartErrorText: "Ellenőrizd az aktuális szűrőbeállításokat és a grafikon konfigurációját."
+      chartErrorText: "Ellenőrizd az aktuális szűrőbeállításokat és a grafikon konfigurációját.",
+      insightHeadlineSingleIndicator:
+        "{country} vezeti a jelenlegi {indicator} összehasonlítást, és {gap} látható különbséget nyit {laggard} előtt.",
+      insightHeadlineBalanced:
+        "{country} mutatja a legerősebb összképet a jelenleg kiválasztott mutatók mentén.",
+      insightHeadlineSingleCountry:
+        "{country} ebben a nézetben inkább fókuszált országprofilként, mint országközi rangsorként olvasható.",
+      cardTopPerformer: "Éllovas",
+      cardTopPerformerNote: "{indicator}: {value}",
+      cardBiggestGap: "Legnagyobb rés",
+      cardBiggestGapNote: "{indicator}: {leader} és {laggard}",
+      cardStandoutCountry: "Kiemelkedő ország",
+      cardStandoutCountryNote: "{count} látható mutatóban áll az élen.",
+      cardBalancedProfile: "Legkiegyensúlyozottabb profil",
+      cardBalancedProfileNote: "A legerősebb átlagos helyezés {count} mutatóban.",
+      cardProfileType: "Profiltípus",
+      cardProfileTypeNote: "Értelmezés a látható mutatók kombinációja alapján.",
+      cardNeedsImprovement: "Fejlesztendő terület",
+      cardCoverage: "Lefedettség",
+      cardCoverageValue: "{indicators} mutató, {years} év",
+      cardCoverageNote: "{count} látható megfigyelés az aktuális nézetben.",
+      narrativeLeader:
+        "{country} vezeti a(z) {indicator} mutatót {value} értékkel, miközben {laggard} adja a leggyengébb látható eredményt {laggardValue} mellett.",
+      narrativeGap:
+        "A legszélesebb eltérés a(z) {indicator} esetében látszik, ahol az éllovas {gap} távolságra van a leggyengébb látható eredménytől, és {avgGapPercent} előnnyel áll a kiválasztott csoportátlag felett.",
+      narrativeTrendImprovement:
+        "{country} mutatja a legmarkánsabb tartományon belüli javulást a(z) {indicator} esetében: {delta} változás {startYear} és {endYear} között.",
+      narrativeTrendRank:
+        "Ugyanebben az összehasonlításban {country} a(z) {startRank}. helyről a(z) {endRank}. helyre mozdul el.",
+      narrativePairRecyclingLandfill:
+        "{country} átlag feletti újrahasznosítást kapcsol átlag alatti lerakással, ami a jelenlegi kiválasztásban viszonylag érettebb kezelési mixre utal.",
+      narrativePairCircularity:
+        "{country} úgy vezeti a körforgásos anyagfelhasználást, hogy közben a települési újrahasznosításban csak középmezőnyös, ami arra utal, hogy a tágabb anyaghatékonyság túlmutat a hulladékgyűjtésen.",
+      narrativePairEnergyLandfill:
+        "{country} erős energetikai hasznosítást párosít továbbra is magas lerakással, ami olyan átmeneti modellt jelez, amely még nem szorította ki teljesen az ártalmatlanítást.",
+      narrativeSingleCountryStrength:
+        "{country} leginkább látható erőssége a(z) {indicator}, {value} értékkel.",
+      narrativeSingleCountryWeakness:
+        "{country} legnyilvánvalóbb nyomáspontja a(z) {indicator}, {value} értékkel.",
+      narrativeCoverage:
+        "Ez a nézet {count} látható megfigyelésre épül, {countries} ország és {indicators} mutató mentén.",
+      profileMixed: "vegyes átmeneti profil",
+      profileLandfill: "lerakásfüggő profil",
+      profileRecycling: "újrahasznosítás-vezérelt profil",
+      profileLowLandfill: "alacsony lerakású, hasznosítás-orientált profil",
+      profileRecovery: "hasznosítás-vezérelt átmeneti profil"
+    },
+    dashboardInsights: {
+      excellence: {
+        municipal_waste_per_capita: "hulladéknyomás kezelése",
+        recycling_share: "újrahasznosítási teljesítmény",
+        landfill_share: "lerakás visszaszorítása",
+        energy_recovery_share: "hasznosítási rendszer mélysége",
+        renewable_energy_share: "megújulóenergia-átmenet",
+        circular_material_use_rate: "körforgásos anyaghatékonyság",
+        ghg_per_capita: "alacsony kibocsátású profil",
+        energy_recovery_level: "energetikai hasznosítási kapacitás"
+      }
     },
     dashboardIndicators: {
       municipal_waste_per_capita: "Települési hulladék egy főre vetítve",

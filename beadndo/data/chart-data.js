@@ -2733,3 +2733,4 @@ const chartData = {
     }
   ]
 };
+window.chartData = chartData;

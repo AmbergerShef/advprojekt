@@ -32,7 +32,8 @@ function localizedTreatment(value) {
 function localizeCountryRows(rows) {
   return rows.map((row) => ({
     ...row,
-    countryLabel: localizedCountry(row.country)
+    countryLabel: localizedCountry(row.country),
+    countryLabelWrapped: wrapAxisLabel(localizedCountry(row.country))
   }));
 }
 
@@ -40,6 +41,7 @@ function localizeTreatmentRows(rows) {
   return rows.map((row) => ({
     ...row,
     countryLabel: localizedCountry(row.country),
+    countryLabelWrapped: wrapAxisLabel(localizedCountry(row.country)),
     treatmentLabel: localizedTreatment(row.treatment_type)
   }));
 }
@@ -83,8 +85,8 @@ const sharedConfig = {
       labelFont: "Source Sans 3",
       titleFont: "Source Sans 3",
       titleFontWeight: 700,
-      labelLimit: 160,
-      titleLimit: 220,
+      labelLimit: 420,
+      titleLimit: 1000,
       labelOverlap: true
     },
     legend: {
@@ -92,8 +94,8 @@ const sharedConfig = {
       titleColor: "#1f2a28",
       labelFont: "Source Sans 3",
       titleFont: "Source Sans 3",
-      labelLimit: 150,
-      titleLimit: 180
+      labelLimit: 220,
+      titleLimit: 1000
     },
     title: {
       color: "#1f2a28",
@@ -117,6 +119,32 @@ function buildSpec(spec) {
 
 function inlineData(values) {
   return { values };
+}
+
+function wrapAxisLabel(text) {
+  const maxLineLength = isCompactViewport() ? 12 : isTabletViewport() ? 16 : 18;
+  const words = String(text).split(/\s+/);
+  const lines = [];
+  let currentLine = "";
+
+  for (const word of words) {
+    const nextLine = currentLine ? `${currentLine} ${word}` : word;
+    if (nextLine.length <= maxLineLength) {
+      currentLine = nextLine;
+      continue;
+    }
+
+    if (currentLine) {
+      lines.push(currentLine);
+    }
+    currentLine = word;
+  }
+
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+
+  return lines.join("\n");
 }
 
 function isCompactViewport() {
@@ -153,22 +181,34 @@ function trendChartHeight() {
 
 function horizontalLabelLimit() {
   if (isCompactViewport()) {
-    return 120;
+    return 110;
   }
   if (isTabletViewport()) {
-    return 180;
+    return 130;
   }
-  return 260;
+  return 150;
 }
 
 function horizontalChartPadding() {
   if (isCompactViewport()) {
-    return { left: 92, right: 18, top: 10, bottom: 10 };
+    return { left: 24, right: 18, top: 10, bottom: 18 };
   }
   if (isTabletViewport()) {
-    return { left: 132, right: 20, top: 12, bottom: 12 };
+    return { left: 28, right: 20, top: 12, bottom: 20 };
   }
-  return { left: 176, right: 24, top: 14, bottom: 14 };
+  return { left: 32, right: 24, top: 14, bottom: 22 };
+}
+
+function horizontalAxisConfig() {
+  return {
+    title: null,
+    labelLimit: horizontalLabelLimit(),
+    labelPadding: 6,
+    labelLineHeight: 14,
+    tickSize: 0,
+    minExtent: isCompactViewport() ? 64 : isTabletViewport() ? 78 : 88,
+    maxExtent: isCompactViewport() ? 78 : isTabletViewport() ? 92 : 104
+  };
 }
 
 function uniqueCountries(rows, options = {}) {
@@ -232,16 +272,10 @@ function buildMunicipalWasteSpec(state) {
         title: ct("charts.wasteAxis")
       },
       y: {
-        field: "countryLabel",
+        field: "countryLabelWrapped",
         type: "nominal",
         sort: "-x",
-        axis: {
-          title: null,
-          labelLimit: horizontalLabelLimit(),
-          labelPadding: 8,
-          labelLineHeight: 14,
-          tickSize: 0
-        }
+        axis: horizontalAxisConfig()
       },
       tooltip: [
         { field: "countryLabel", type: "nominal", title: ct("charts.countryTooltip") },
@@ -291,16 +325,10 @@ function buildWasteTreatmentSpec(state) {
         title: ct("charts.treatmentAxis")
       },
       y: {
-        field: "countryLabel",
+        field: "countryLabelWrapped",
         type: "nominal",
         sort: "-x",
-        axis: {
-          title: null,
-          labelLimit: horizontalLabelLimit(),
-          labelPadding: 8,
-          labelLineHeight: 14,
-          tickSize: 0
-        }
+        axis: horizontalAxisConfig()
       },
       color: {
         field: "treatmentLabel",
@@ -548,16 +576,10 @@ function buildGhgSpec(state) {
         title: ct("charts.ghgAxis")
       },
       y: {
-        field: "countryLabel",
+        field: "countryLabelWrapped",
         type: "nominal",
         sort: "-x",
-        axis: {
-          title: null,
-          labelLimit: horizontalLabelLimit(),
-          labelPadding: 8,
-          labelLineHeight: 14,
-          tickSize: 0
-        }
+        axis: horizontalAxisConfig()
       },
       tooltip: [
         { field: "countryLabel", type: "nominal", title: ct("charts.countryTooltip") },
@@ -820,3 +842,4 @@ const chartConfigs = [
     buildSpec: buildEnergyRecoverySpec
   }
 ];
+window.chartConfigs = chartConfigs;
