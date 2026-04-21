@@ -69,7 +69,7 @@ const sharedConfig = {
     type: "fit-x",
     contains: "padding"
   },
-  width: "container",
+  width: 640,
   height: 280,
   background: "transparent",
   config: {
@@ -83,13 +83,17 @@ const sharedConfig = {
       labelFont: "Source Sans 3",
       titleFont: "Source Sans 3",
       titleFontWeight: 700,
-      labelLimit: 180
+      labelLimit: 160,
+      titleLimit: 220,
+      labelOverlap: true
     },
     legend: {
       labelColor: "#1f2a28",
       titleColor: "#1f2a28",
       labelFont: "Source Sans 3",
-      titleFont: "Source Sans 3"
+      titleFont: "Source Sans 3",
+      labelLimit: 150,
+      titleLimit: 180
     },
     title: {
       color: "#1f2a28",
@@ -113,6 +117,58 @@ function buildSpec(spec) {
 
 function inlineData(values) {
   return { values };
+}
+
+function isCompactViewport() {
+  return window.innerWidth <= 700;
+}
+
+function isTabletViewport() {
+  return window.innerWidth <= 1024;
+}
+
+function categoricalChartHeight(count, options = {}) {
+  const compact = isCompactViewport();
+  const tablet = isTabletViewport();
+  const step = compact
+    ? options.mobileStep ?? 14
+    : tablet
+      ? options.tabletStep ?? 16
+      : options.desktopStep ?? 18;
+  const base = options.base ?? 86;
+  const min = compact ? options.mobileMin ?? 240 : tablet ? options.tabletMin ?? 280 : options.desktopMin ?? 320;
+  const max = compact ? options.mobileMax ?? 420 : tablet ? options.tabletMax ?? 520 : options.desktopMax ?? 640;
+  return Math.max(min, Math.min(max, base + count * step));
+}
+
+function trendChartHeight() {
+  if (isCompactViewport()) {
+    return 260;
+  }
+  if (isTabletViewport()) {
+    return 300;
+  }
+  return 340;
+}
+
+function horizontalLabelLimit() {
+  if (isCompactViewport()) {
+    return 120;
+  }
+  if (isTabletViewport()) {
+    return 180;
+  }
+  return 260;
+}
+
+function horizontalChartPadding() {
+  if (isCompactViewport()) {
+    return { left: 92, right: 18, top: 10, bottom: 10 };
+  }
+  if (isTabletViewport()) {
+    return { left: 132, right: 20, top: 12, bottom: 12 };
+  }
+  return { left: 176, right: 24, top: 14, bottom: 14 };
 }
 
 function uniqueCountries(rows, options = {}) {
@@ -157,7 +213,12 @@ function buildMunicipalWasteSpec(state) {
   return buildSpec({
     title: ct("charts.wasteTitle"),
     data: inlineData(rows),
-    height: { step: 20 },
+    padding: horizontalChartPadding(),
+    height: categoricalChartHeight(rows.length, {
+      desktopStep: 18,
+      tabletStep: 16,
+      mobileStep: 14
+    }),
     mark: {
       type: "bar",
       cornerRadiusTopRight: 6,
@@ -174,7 +235,13 @@ function buildMunicipalWasteSpec(state) {
         field: "countryLabel",
         type: "nominal",
         sort: "-x",
-        axis: { title: null }
+        axis: {
+          title: null,
+          labelLimit: horizontalLabelLimit(),
+          labelPadding: 8,
+          labelLineHeight: 14,
+          tickSize: 0
+        }
       },
       tooltip: [
         { field: "countryLabel", type: "nominal", title: ct("charts.countryTooltip") },
@@ -205,7 +272,12 @@ function buildWasteTreatmentSpec(state) {
   return buildSpec({
     title: ct("charts.treatmentTitle"),
     data: inlineData(rows),
-    height: { step: 18 },
+    padding: horizontalChartPadding(),
+    height: categoricalChartHeight(state.countries.length, {
+      desktopStep: 18,
+      tabletStep: 16,
+      mobileStep: 14
+    }),
     mark: {
       type: "bar",
       cornerRadiusTopRight: 4,
@@ -222,12 +294,23 @@ function buildWasteTreatmentSpec(state) {
         field: "countryLabel",
         type: "nominal",
         sort: "-x",
-        axis: { title: null }
+        axis: {
+          title: null,
+          labelLimit: horizontalLabelLimit(),
+          labelPadding: 8,
+          labelLineHeight: 14,
+          tickSize: 0
+        }
       },
       color: {
         field: "treatmentLabel",
         type: "nominal",
         title: ct("charts.treatmentLegend"),
+        legend: {
+          orient: isCompactViewport() ? "bottom" : "top",
+          direction: isCompactViewport() ? "horizontal" : "horizontal",
+          columns: isCompactViewport() ? 1 : 3
+        },
         scale: {
           domain: treatmentOptions.map((value) => localizedTreatment(value)),
           range: ["#2f5d50", "#b77a52", "#7b8f47"]
@@ -349,7 +432,7 @@ function buildRenewableEnergySpec(state) {
   return buildSpec({
     title: ct("charts.renewableTitle"),
     data: inlineData(rows),
-    height: 360,
+    height: trendChartHeight(),
     layer: layers
   });
 }
@@ -408,14 +491,15 @@ function buildCircularitySpec(state) {
     }
   ];
 
-  if (rows.length <= 8) {
+  if (rows.length <= (isCompactViewport() ? 0 : 6)) {
     layers.push({
       mark: {
         type: "text",
         dy: -12,
         font: "Source Sans 3",
         fontSize: 11,
-        color: "#1f2a28"
+        color: "#1f2a28",
+        clip: true
       },
       encoding: {
         x: { field: "recycling_rate_percent", type: "quantitative" },
@@ -431,7 +515,7 @@ function buildCircularitySpec(state) {
   return buildSpec({
     title: ct("charts.circularTitle"),
     data: inlineData(rows),
-    height: 360,
+    height: isCompactViewport() ? 280 : isTabletViewport() ? 320 : 360,
     layer: layers
   });
 }
@@ -445,7 +529,12 @@ function buildGhgSpec(state) {
   return buildSpec({
     title: ct("charts.ghgTitle"),
     data: inlineData(rows),
-    height: { step: 20 },
+    padding: horizontalChartPadding(),
+    height: categoricalChartHeight(rows.length, {
+      desktopStep: 18,
+      tabletStep: 16,
+      mobileStep: 14
+    }),
     mark: {
       type: "bar",
       cornerRadiusTopRight: 6,
@@ -462,7 +551,13 @@ function buildGhgSpec(state) {
         field: "countryLabel",
         type: "nominal",
         sort: "-x",
-        axis: { title: null }
+        axis: {
+          title: null,
+          labelLimit: horizontalLabelLimit(),
+          labelPadding: 8,
+          labelLineHeight: 14,
+          tickSize: 0
+        }
       },
       tooltip: [
         { field: "countryLabel", type: "nominal", title: ct("charts.countryTooltip") },
@@ -583,7 +678,7 @@ function buildEnergyRecoverySpec(state) {
   return buildSpec({
     title: ct("charts.energyTitle"),
     data: inlineData(rows),
-    height: 360,
+    height: trendChartHeight(),
     layer: layers
   });
 }

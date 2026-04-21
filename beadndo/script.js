@@ -5,6 +5,7 @@ const BENCHMARK_COUNTRY = "EU average";
 const chartRuntimeStates = new Map();
 
 let dashboardRuntimeState = null;
+let resizeRerenderTimeout = null;
 
 const DASHBOARD_INDICATORS = [
   { key: "municipal_waste_per_capita", unitKey: "units.kgPerCapita", decimals: 0 },
@@ -52,6 +53,68 @@ function treatmentLabel(value) {
 
 function cloneState(state) {
   return JSON.parse(JSON.stringify(state));
+}
+
+function clampValue(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function getResponsiveChartWidth(container, options = {}) {
+  const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 1280;
+  const framePadding = options.framePadding ?? (viewportWidth <= 480 ? 20 : viewportWidth <= 700 ? 24 : 28);
+  const availableWidth = Math.max((container?.clientWidth || 0) - framePadding, 0);
+
+  if (availableWidth === 0) {
+    return options.fallbackWidth ?? 640;
+  }
+
+  const minWidth = options.minWidth ?? (viewportWidth <= 480 ? 260 : viewportWidth <= 700 ? 300 : 420);
+  const maxWidth = options.maxWidth ?? Math.max(availableWidth, minWidth);
+  return clampValue(availableWidth, minWidth, maxWidth);
+}
+
+function applyResponsiveChartSpec(spec, container, options = {}) {
+  const width = getResponsiveChartWidth(container, options);
+  const isCompactViewport = window.innerWidth <= 700;
+  const isTabletViewport = window.innerWidth <= 1024;
+  const defaultPadding = isCompactViewport
+    ? { left: 6, right: 12, top: 8, bottom: 6 }
+    : isTabletViewport
+      ? { left: 8, right: 14, top: 10, bottom: 8 }
+      : { left: 10, right: 16, top: 12, bottom: 10 };
+
+  return {
+    ...spec,
+    width,
+    autosize: {
+      type: "fit-x",
+      contains: "padding"
+    },
+    padding: spec.padding || defaultPadding,
+    config: {
+      ...(spec.config || {}),
+      axis: {
+        ...(spec.config?.axis || {}),
+        labelLimit: isCompactViewport ? 120 : isTabletViewport ? 180 : 260,
+        titleLimit: isCompactViewport ? 180 : isTabletViewport ? 240 : 320,
+        labelBound: true,
+        titlePadding: isCompactViewport ? 10 : 12
+      },
+      legend: {
+        ...(spec.config?.legend || {}),
+        orient: isCompactViewport ? "bottom" : spec.config?.legend?.orient,
+        direction: isCompactViewport ? "horizontal" : spec.config?.legend?.direction,
+        labelLimit: isCompactViewport ? 96 : 150,
+        titleLimit: isCompactViewport ? 120 : 180
+      },
+      title: {
+        ...(spec.config?.title || {}),
+        fontSize: isCompactViewport ? 16 : isTabletViewport ? 18 : 20,
+        limit: width,
+        lineHeight: isCompactViewport ? 20 : 24
+      }
+    }
+  };
 }
 
 function formatValue(value, suffix = "", digits = 1) {
@@ -639,6 +702,30 @@ function buildDashboardChartSpec(rows, state) {
   const indicatorCount = state.indicators.length;
   const countryCount = state.countries.length;
   const isTimeRange = state.startYear !== state.endYear;
+  const isCompactViewport = window.innerWidth <= 700;
+  const isTabletViewport = window.innerWidth <= 1024;
+  const snapshotHeight = Math.max(
+    isCompactViewport ? 220 : isTabletViewport ? 260 : 300,
+    Math.min(
+      isCompactViewport ? 360 : isTabletViewport ? 440 : 520,
+      84 + countryCount * (isCompactViewport ? 14 : isTabletViewport ? 16 : 18)
+    )
+  );
+  const snapshotFacetHeight = Math.max(
+    isCompactViewport ? 140 : isTabletViewport ? 160 : 180,
+    Math.min(
+      isCompactViewport ? 180 : isTabletViewport ? 210 : 240,
+      64 + countryCount * (isCompactViewport ? 4 : isTabletViewport ? 5 : 6)
+    )
+  );
+  const trendFacetHeight = indicatorCount > 1
+    ? (isCompactViewport ? 150 : isTabletViewport ? 165 : 180)
+    : (isCompactViewport ? 220 : isTabletViewport ? 240 : 260);
+  const dashboardBarPadding = isCompactViewport
+    ? { left: 92, right: 18, top: 10, bottom: 10 }
+    : isTabletViewport
+      ? { left: 132, right: 20, top: 12, bottom: 12 }
+      : { left: 176, right: 24, top: 14, bottom: 14 };
   const title = isTimeRange
     ? t("dashboard.chartTrendTitle")
     : t("dashboard.chartSnapshotTitle", { year: state.endYear });
@@ -652,8 +739,8 @@ function buildDashboardChartSpec(rows, state) {
       return {
         $schema: "https://vega.github.io/schema/vega-lite/v5.json",
         title,
-        width: "container",
-        height: { step: 20 },
+        padding: dashboardBarPadding,
+        height: snapshotHeight,
         background: "transparent",
         data: { values: rows },
         mark: {
@@ -672,7 +759,13 @@ function buildDashboardChartSpec(rows, state) {
             field: "countryLabel",
             type: "nominal",
             sort: "-x",
-            axis: { title: null }
+            axis: {
+              title: null,
+              labelLimit: isCompactViewport ? 120 : isTabletViewport ? 180 : 260,
+              labelPadding: 8,
+              labelLineHeight: 14,
+              tickSize: 0
+            }
           },
           tooltip: [
             { field: "countryLabel", type: "nominal", title: t("charts.countryTooltip") },
@@ -685,13 +778,12 @@ function buildDashboardChartSpec(rows, state) {
       };
     }
 
-    return {
-      $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-      title,
-      width: "container",
-      height: { step: 20 },
-      background: "transparent",
-      data: { values: rows },
+      return {
+        $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+        title,
+        padding: dashboardBarPadding,
+        background: "transparent",
+        data: { values: rows },
       facet: {
         row: {
           field: "indicatorLabel",
@@ -706,6 +798,7 @@ function buildDashboardChartSpec(rows, state) {
         }
       },
       spec: {
+        height: snapshotFacetHeight,
         mark: {
           type: "bar",
           cornerRadiusTopRight: 5,
@@ -718,7 +811,13 @@ function buildDashboardChartSpec(rows, state) {
             field: "countryLabel",
             type: "nominal",
             sort: "-x",
-            axis: { title: null }
+            axis: {
+              title: null,
+              labelLimit: isCompactViewport ? 120 : isTabletViewport ? 180 : 260,
+              labelPadding: 8,
+              labelLineHeight: 14,
+              tickSize: 0
+            }
           },
           tooltip: [
             { field: "countryLabel", type: "nominal", title: t("charts.countryTooltip") },
@@ -740,7 +839,6 @@ function buildDashboardChartSpec(rows, state) {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     title,
-    width: "container",
     background: "transparent",
     data: { values: rows },
     facet:
@@ -760,7 +858,7 @@ function buildDashboardChartSpec(rows, state) {
           }
         : undefined,
     spec: {
-      height: 180,
+      height: trendFacetHeight,
       mark: {
         type: "line",
         point: true,
@@ -786,7 +884,13 @@ function buildDashboardChartSpec(rows, state) {
           field: "countryLabel",
           type: "nominal",
           title: t("charts.countryLegend"),
-          legend: countryCount > 12 ? null : undefined
+          legend:
+            countryCount > 12
+              ? null
+              : {
+                  orient: isCompactViewport ? "bottom" : "top",
+                  direction: "horizontal"
+                }
         },
         tooltip: [
           { field: "countryLabel", type: "nominal", title: t("charts.countryTooltip") },
@@ -802,6 +906,8 @@ function buildDashboardChartSpec(rows, state) {
 }
 
 function dashboardChartConfig() {
+  const isCompactViewport = window.innerWidth <= 700;
+  const isTabletViewport = window.innerWidth <= 1024;
   return {
     view: { stroke: null },
     axis: {
@@ -809,13 +915,22 @@ function dashboardChartConfig() {
       titleColor: "#1f2a28",
       gridColor: "rgba(31, 42, 40, 0.10)",
       labelFont: "Source Sans 3",
-      titleFont: "Source Sans 3"
+      titleFont: "Source Sans 3",
+      labelLimit: isCompactViewport ? 120 : isTabletViewport ? 180 : 260,
+      titleLimit: isCompactViewport ? 180 : isTabletViewport ? 240 : 320,
+      labelBound: true,
+      titlePadding: isCompactViewport ? 10 : 12
+    },
+    legend: {
+      labelLimit: isCompactViewport ? 96 : 150,
+      titleLimit: isCompactViewport ? 120 : 180
     },
     title: {
       color: "#1f2a28",
       font: "Fraunces",
-      fontSize: 20,
-      anchor: "start"
+      fontSize: isCompactViewport ? 16 : isTabletViewport ? 18 : 20,
+      anchor: "start",
+      lineHeight: isCompactViewport ? 20 : 24
     }
   };
 }
@@ -905,7 +1020,10 @@ async function renderDashboardChart(rows, state) {
   }
 
   try {
-    await vegaEmbed(container, spec, { actions: false, renderer: "svg" });
+    const responsiveSpec = applyResponsiveChartSpec(spec, container, {
+      minWidth: window.innerWidth <= 700 ? 280 : 420
+    });
+    await vegaEmbed(container, responsiveSpec, { actions: false, renderer: "svg" });
   } catch (error) {
     console.error("Failed to render dashboard chart:", error);
     container.innerHTML = `
@@ -1165,7 +1283,10 @@ async function renderSingleChart(chart, state) {
   }
 
   try {
-    await vegaEmbed(container, spec, { actions: false, renderer: "svg" });
+    const responsiveSpec = applyResponsiveChartSpec(spec, container, {
+      minWidth: window.innerWidth <= 700 ? 280 : 480
+    });
+    await vegaEmbed(container, responsiveSpec, { actions: false, renderer: "svg" });
   } catch (error) {
     console.error(`Failed to render ${chart.id}:`, error);
     container.innerHTML = `
@@ -1366,6 +1487,13 @@ async function initializePage() {
   await rerenderLocalizedUi();
   siteI18n.subscribe(() => {
     rerenderLocalizedUi();
+  });
+
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeRerenderTimeout);
+    resizeRerenderTimeout = window.setTimeout(() => {
+      rerenderLocalizedUi();
+    }, 140);
   });
 }
 
