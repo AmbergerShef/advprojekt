@@ -1,5 +1,7 @@
 import SectionHeading from "../components/SectionHeading.jsx";
 import RevealInView from "../components/RevealInView.jsx";
+import robiPhoto from "../../assets/Robi.png";
+import tottiPhoto from "../../assets/Totti.png";
 
 export function SourcesSection() {
   return (
@@ -105,7 +107,7 @@ export default function ReferenceSection() {
           <div className="contributors-gallery">
             <figure className="contributors-figure">
               <img
-                src="assets/Robi.png"
+                src={robiPhoto}
                 alt="Szakács Róbert"
                 className="contributors-image"
               />
@@ -115,7 +117,7 @@ export default function ReferenceSection() {
             </figure>
             <figure className="contributors-figure">
               <img
-                src="assets/Totti.png"
+                src={tottiPhoto}
                 alt="Tóth Attila"
                 className="contributors-image"
               />
