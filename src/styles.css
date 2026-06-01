@@ -239,9 +239,10 @@ p {
   min-height: 50px;
   padding: 0.9rem 1.3rem;
   border-radius: 999px;
-  border: 1px solid transparent;
+  border: 0;
   text-decoration: none;
   font-weight: 700;
+  cursor: pointer;
   transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
 }
 
@@ -255,9 +256,96 @@ p {
 }
 
 .button-secondary {
-  border-color: var(--line);
+  border: 1px solid var(--line);
   color: var(--text);
   background: rgba(255, 255, 255, 0.03);
+}
+
+.app-view {
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  border-radius: 30px;
+}
+
+.app-view--fallback {
+  min-height: 72vh;
+}
+
+.app-view__topbar,
+.app-view__meta {
+  display: grid;
+  gap: 1rem;
+}
+
+.app-view__topbar {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.app-view__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.app-view__description {
+  margin-bottom: 0;
+}
+
+.app-view__meta {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.app-view__meta-card,
+.app-view__loading {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 24px;
+  padding: 1rem 1.1rem;
+}
+
+.app-view__meta-card span {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.app-view__meta-card strong {
+  display: block;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.app-view__stage {
+  position: relative;
+  min-height: 72vh;
+  border-radius: 26px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: rgba(5, 11, 19, 0.86);
+}
+
+.app-view__loading {
+  position: absolute;
+  inset: 1rem;
+  z-index: 1;
+  align-content: start;
+}
+
+.app-view__frame {
+  width: 100%;
+  min-height: 72vh;
+  border: 0;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.app-view__frame.is-ready {
+  opacity: 1;
 }
 
 .hero-card h2 {
@@ -466,7 +554,9 @@ p {
   }
 
   .hero,
-  .project-cards {
+  .project-cards,
+  .app-view__topbar,
+  .app-view__meta {
     grid-template-columns: 1fr;
   }
 
@@ -483,6 +573,10 @@ p {
   .site-footer {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .app-view__actions {
+    justify-content: flex-start;
   }
 }
 

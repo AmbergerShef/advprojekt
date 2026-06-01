@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import robiPortrait from "../beadndo/assets/Robi.png";
+
+const HubAppView = lazy(() => import("./components/HubAppView.jsx"));
 
 function withBasePath(path) {
   const base = import.meta.env.BASE_URL || "/";
@@ -79,6 +81,29 @@ const APPS = [
     }
   },
   {
+    slug: "danube-street-stories",
+    href: withBasePath("apps/danube-street-stories/"),
+    accent: "game",
+    year: "2026",
+    kind: { hu: "Játék", en: "Game", ro: "Joc" },
+    title: "Danube Street Stories",
+    description: {
+      hu: "GTA-hangulatú, webes mini open-world játék NPC-kkel, küldetésekkel, pénzrendszerrel, autóval, motorral és fegyverváltással.",
+      en: "A GTA-inspired web mini open world with NPCs, missions, money systems, cars, bikes, and weapon switching.",
+      ro: "Un mini open world web inspirat de GTA, cu NPC-uri, misiuni, bani, mașini, motociclete și schimbare de arme."
+    },
+    highlights: {
+      hu: ["Pseudo-3D városi pálya", "Három játszható küldetés", "Autó, motor, bolt és heat rendszer"],
+      en: ["Pseudo-3D city map", "Three playable missions", "Car, bike, shop, and heat system"],
+      ro: ["Hartă urbană pseudo-3D", "Trei misiuni jucabile", "Mașină, motor, shop și sistem heat"]
+    },
+    details: {
+      hu: ["Stack: React, Vite, Three.js, React Three Fiber, Rapier", "Megvalósítás: desktop-first FPS sandbox budapesti városi snapshotból, küldetésekkel, hostile AI-val és járművekkel"],
+      en: ["Stack: React, Vite, Three.js, React Three Fiber, Rapier", "Implementation: desktop-first FPS sandbox built from a Budapest city snapshot with missions, hostile AI, and vehicles"],
+      ro: ["Stack: React, Vite, Three.js, React Three Fiber, Rapier", "Implementare: sandbox FPS desktop-first construit dintr-un snapshot urban din Budapesta, cu misiuni, AI ostil și vehicule"]
+    }
+  },
+  {
     slug: "romanian-cities-population",
     href: withBasePath("apps/romanian-cities-population/"),
     accent: "archive",
@@ -124,7 +149,15 @@ const COPY = {
     worksEyebrow: "Válogatás",
     worksTitle: "Kiemelt munkák",
     open: "Megnyitás",
+    openStandalone: "Külön oldalon",
+    backToHub: "Vissza a hubra",
     infoLabel: "Részletek",
+    stackLabel: "Stack",
+    runtimeLabel: "Betöltés",
+    lazyRuntime: "Csak ezen a nézeten töltődik be",
+    webglRuntime: "WebGL csak megnyitás után inicializálódik",
+    loadingLabel: "Lazy launch",
+    loadingText: "Az app külön nézetként töltődik be, ezért a hub kezdőbetöltése könnyű marad.",
     footer: ["Szakács Róbert", "Projektportfólió"]
   },
   en: {
@@ -147,7 +180,15 @@ const COPY = {
     worksEyebrow: "Selection",
     worksTitle: "Selected work",
     open: "Open",
+    openStandalone: "Open standalone",
+    backToHub: "Back to hub",
     infoLabel: "Details",
+    stackLabel: "Stack",
+    runtimeLabel: "Loading",
+    lazyRuntime: "Loaded only when this view is opened",
+    webglRuntime: "WebGL initializes only after launch",
+    loadingLabel: "Lazy launch",
+    loadingText: "This app is mounted as a separate view, so the hub keeps its initial payload light.",
     footer: ["Róbert Szakács", "Project portfolio"]
   },
   ro: {
@@ -170,12 +211,33 @@ const COPY = {
     worksEyebrow: "Selecție",
     worksTitle: "Lucrări selectate",
     open: "Deschide",
+    openStandalone: "Deschide separat",
+    backToHub: "Înapoi la hub",
     infoLabel: "Detalii",
+    stackLabel: "Stack",
+    runtimeLabel: "Încărcare",
+    lazyRuntime: "Se încarcă doar când deschizi această vedere",
+    webglRuntime: "WebGL se inițializează doar după deschidere",
+    loadingLabel: "Lazy launch",
+    loadingText: "Aplicația se montează separat, astfel shell-ul hubului rămâne ușor la prima încărcare.",
     footer: ["Róbert Szakács", "Portofoliu de proiecte"]
   }
 };
 
-function AppCard({ app, copy }) {
+function getRouteSlug() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const match = window.location.hash.match(/^#apps\/([^/]+)$/);
+  return match?.[1] || null;
+}
+
+function preloadHubAppView() {
+  return import("./components/HubAppView.jsx");
+}
+
+function AppCard({ app, copy, onOpen }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -209,9 +271,15 @@ function AppCard({ app, copy }) {
           <li key={item}>{item}</li>
         ))}
       </ul>
-      <a className="button button-primary wide" href={app.href}>
+      <button
+        className="button button-primary wide"
+        type="button"
+        onClick={() => onOpen(app.slug)}
+        onMouseEnter={preloadHubAppView}
+        onFocus={preloadHubAppView}
+      >
         {copy.open}
-      </a>
+      </button>
     </article>
   );
 }
@@ -220,18 +288,40 @@ export default function App() {
   const [language, setLanguage] = useState(
     () => localStorage.getItem("portfolio-root-language") || "hu"
   );
+  const [activeSlug, setActiveSlug] = useState(() => getRouteSlug());
   const copy = useMemo(() => COPY[language] || COPY.hu, [language]);
+  const activeApp = useMemo(
+    () => APPS.find((app) => app.slug === activeSlug) || null,
+    [activeSlug]
+  );
 
   useEffect(() => {
     document.documentElement.lang = copy.lang;
-    document.title =
-      language === "hu"
+    document.title = activeApp
+      ? `${activeApp.title} | Hub`
+      : language === "hu"
         ? "Szakács Róbert | Projektportfólió"
         : language === "ro"
           ? "Róbert Szakács | Portofoliu"
           : "Róbert Szakács | Project Portfolio";
     localStorage.setItem("portfolio-root-language", language);
-  }, [copy.lang, language]);
+  }, [activeApp, copy.lang, language]);
+
+  useEffect(() => {
+    const syncRoute = () => setActiveSlug(getRouteSlug());
+
+    window.addEventListener("hashchange", syncRoute);
+    return () => window.removeEventListener("hashchange", syncRoute);
+  }, []);
+
+  function openApp(slug) {
+    window.location.hash = `apps/${slug}`;
+  }
+
+  function closeApp() {
+    window.history.pushState(null, "", `${window.location.pathname}${window.location.search}`);
+    setActiveSlug(null);
+  }
 
   return (
     <>
@@ -268,53 +358,73 @@ export default function App() {
       </header>
 
       <main>
-        <section className="hero" id="top">
-          <div className="hero-copy">
-            <p className="eyebrow">{copy.eyebrow}</p>
-            <div className="hero-heading">
-              <img className="hero-portrait" src={robiPortrait} alt="Róbert Szakács portrait" />
-              <h1>{copy.title}</h1>
-            </div>
-            <p className="lead">{copy.lead}</p>
-            <div className="hero-actions">
-              <a className="button button-primary" href={APPS[0].href}>
-                {copy.primary}
-              </a>
-              <a className="button button-secondary" href="#work">
-                {copy.secondary}
-              </a>
-            </div>
-          </div>
-
-          <aside className="hero-card">
-            <p className="card-label">{copy.panelLabel}</p>
-            <h2>{copy.panelTitle}</h2>
-            <p>{copy.panelText}</p>
-            <div className="spotlight-meta">
-              {copy.panelMeta.map(([label, value]) => (
-                <div className="spotlight-meta__row" key={label}>
-                  <span>{label}</span>
-                  <strong>{value}</strong>
+        {activeApp ? (
+          <Suspense fallback={<section className="panel app-view app-view--fallback"></section>}>
+            <HubAppView app={activeApp} copy={copy} onBack={closeApp} />
+          </Suspense>
+        ) : (
+          <>
+            <section className="hero" id="top">
+              <div className="hero-copy">
+                <p className="eyebrow">{copy.eyebrow}</p>
+                <div className="hero-heading">
+                  <img className="hero-portrait" src={robiPortrait} alt="Róbert Szakács portrait" />
+                  <h1>{copy.title}</h1>
                 </div>
-              ))}
-            </div>
-            <a className="button button-primary wide" href={APPS[0].href}>
-              {copy.primary}
-            </a>
-          </aside>
-        </section>
+                <p className="lead">{copy.lead}</p>
+                <div className="hero-actions">
+                  <button
+                    className="button button-primary"
+                    type="button"
+                    onClick={() => openApp(APPS[0].slug)}
+                    onMouseEnter={preloadHubAppView}
+                    onFocus={preloadHubAppView}
+                  >
+                    {copy.primary}
+                  </button>
+                  <a className="button button-secondary" href="#work">
+                    {copy.secondary}
+                  </a>
+                </div>
+              </div>
 
-        <section className="panel project-panel" id="work">
-          <div className="section-heading">
-            <p className="eyebrow">{copy.worksEyebrow}</p>
-            <h2>{copy.worksTitle}</h2>
-          </div>
-          <div className="project-cards">
-            {APPS.map((app) => (
-              <AppCard key={app.slug} app={app} copy={copy} />
-            ))}
-          </div>
-        </section>
+              <aside className="hero-card">
+                <p className="card-label">{copy.panelLabel}</p>
+                <h2>{copy.panelTitle}</h2>
+                <p>{copy.panelText}</p>
+                <div className="spotlight-meta">
+                  {copy.panelMeta.map(([label, value]) => (
+                    <div className="spotlight-meta__row" key={label}>
+                      <span>{label}</span>
+                      <strong>{value}</strong>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  className="button button-primary wide"
+                  type="button"
+                  onClick={() => openApp(APPS[0].slug)}
+                  onMouseEnter={preloadHubAppView}
+                  onFocus={preloadHubAppView}
+                >
+                  {copy.primary}
+                </button>
+              </aside>
+            </section>
+
+            <section className="panel project-panel" id="work">
+              <div className="section-heading">
+                <p className="eyebrow">{copy.worksEyebrow}</p>
+                <h2>{copy.worksTitle}</h2>
+              </div>
+              <div className="project-cards">
+                {APPS.map((app) => (
+                  <AppCard key={app.slug} app={app} copy={copy} onOpen={openApp} />
+                ))}
+              </div>
+            </section>
+          </>
+        )}
       </main>
 
       <footer className="site-footer">

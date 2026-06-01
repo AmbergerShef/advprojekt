@@ -23,6 +23,11 @@ const appCopies = [
     outDir: "last-ring-arena"
   },
   {
+    kind: "vite-build",
+    sourceDir: "jatekv2",
+    outDir: "danube-street-stories"
+  },
+  {
     kind: "static-copy",
     sourceDir: "romania-nepesseg",
     outDir: "romanian-cities-population"

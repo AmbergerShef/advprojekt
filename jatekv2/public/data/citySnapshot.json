@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "name": "Riverside Garage District",
+    "centerLat": 47.49791,
+    "centerLon": 19.05421,
+    "source": "handcrafted-gameplay-district",
+    "sourceMode": "curated"
+  },
+  "bounds": {
+    "width": 340,
+    "depth": 280
+  },
+  "roads": [
+    { "id": "river-avenue", "x": 0, "z": -8, "width": 320, "depth": 24, "type": "main" },
+    { "id": "market-street", "x": -86, "z": 54, "width": 24, "depth": 176, "type": "main" },
+    { "id": "garage-lane", "x": 74, "z": -74, "width": 22, "depth": 132, "type": "main" },
+    { "id": "park-road", "x": -22, "z": 92, "width": 228, "depth": 18, "type": "secondary" },
+    { "id": "service-cut", "x": 118, "z": 38, "width": 104, "depth": 16, "type": "secondary" },
+    { "id": "residential-loop", "x": -128, "z": -78, "width": 18, "depth": 116, "type": "secondary" }
+  ],
+  "sidewalks": [
+    { "id": "river-avenue-north-walk", "x": 0, "z": -24, "width": 320, "depth": 5 },
+    { "id": "river-avenue-south-walk", "x": 0, "z": 8, "width": 320, "depth": 5 },
+    { "id": "market-street-west-walk", "x": -102, "z": 54, "width": 5, "depth": 176 },
+    { "id": "market-street-east-walk", "x": -70, "z": 54, "width": 5, "depth": 176 },
+    { "id": "garage-lane-west-walk", "x": 58, "z": -74, "width": 5, "depth": 132 },
+    { "id": "garage-lane-east-walk", "x": 90, "z": -74, "width": 5, "depth": 132 },
+    { "id": "park-road-north-walk", "x": -22, "z": 78, "width": 228, "depth": 4 },
+    { "id": "park-road-south-walk", "x": -22, "z": 106, "width": 228, "depth": 4 },
+    { "id": "service-cut-north-walk", "x": 118, "z": 26, "width": 104, "depth": 4 },
+    { "id": "service-cut-south-walk", "x": 118, "z": 50, "width": 104, "depth": 4 },
+    { "id": "residential-loop-west-walk", "x": -140, "z": -78, "width": 4, "depth": 116 },
+    { "id": "residential-loop-east-walk", "x": -116, "z": -78, "width": 4, "depth": 116 }
+  ],
+  "buildings": [
+    { "id": "apt-north-1", "x": -44, "z": -50, "width": 46, "depth": 40, "height": 34, "kind": "residential", "roofShape": "flat" },
+    { "id": "apt-north-2", "x": 18, "z": -52, "width": 48, "depth": 42, "height": 38, "kind": "mixed", "roofShape": "flat" },
+    { "id": "office-corner", "x": 122, "z": -38, "width": 44, "depth": 48, "height": 44, "kind": "office", "roofShape": "flat" },
+    { "id": "garage-main", "x": 130, "z": -116, "width": 58, "depth": 34, "height": 12, "kind": "garage", "roofShape": "flat" },
+    { "id": "garage-service", "x": 42, "z": -126, "width": 40, "depth": 30, "height": 11, "kind": "service", "roofShape": "flat" },
+    { "id": "market-hall", "x": -34, "z": 52, "width": 52, "depth": 34, "height": 19, "kind": "shop", "roofShape": "flat" },
+    { "id": "corner-store", "x": -126, "z": 28, "width": 34, "depth": 42, "height": 18, "kind": "shop", "roofShape": "flat" },
+    { "id": "row-house-1", "x": -158, "z": -120, "width": 24, "depth": 28, "height": 13, "kind": "house", "roofShape": "hip" },
+    { "id": "row-house-2", "x": -158, "z": -78, "width": 24, "depth": 28, "height": 13, "kind": "house", "roofShape": "hip" },
+    { "id": "row-house-3", "x": -158, "z": -36, "width": 24, "depth": 28, "height": 13, "kind": "house", "roofShape": "hip" },
+    { "id": "park-villas", "x": -126, "z": 126, "width": 40, "depth": 28, "height": 16, "kind": "house", "roofShape": "hip" },
+    { "id": "courier-depot", "x": 64, "z": 122, "width": 54, "depth": 32, "height": 17, "kind": "service", "roofShape": "flat" },
+    { "id": "south-apartment", "x": 18, "z": 146, "width": 42, "depth": 34, "height": 27, "kind": "residential", "roofShape": "flat" },
+    { "id": "hideout", "x": 148, "z": -154, "width": 42, "depth": 30, "height": 15, "kind": "garage", "roofShape": "flat" }
+  ],
+  "parks": [
+    { "id": "central-park", "x": -120, "z": 112, "width": 82, "depth": 58 },
+    { "id": "river-grass", "x": 86, "z": 108, "width": 74, "depth": 42 }
+  ],
+  "poi": [
+    { "id": "spawn", "x": -22, "z": 18, "label": "Safe Spawn" },
+    { "id": "market", "x": -58, "z": 52, "label": "Shop" },
+    { "id": "garage", "x": 116, "z": -90, "label": "Garage Yard" },
+    { "id": "courier", "x": 74, "z": 92, "label": "Courier Depot" }
+  ],
+  "playerSpawn": { "x": -22, "y": 1.25, "z": 18 },
+  "missionMarkers": [
+    { "id": "pickup", "x": -132, "y": 0, "z": 80 },
+    { "id": "courier", "x": 78, "y": 0, "z": 96 },
+    { "id": "bag", "x": 142, "y": 0, "z": -132 }
+  ],
+  "vehicleSpawns": [
+    { "id": "car", "type": "car", "x": 30, "y": 0.8, "z": -8, "rotation": 1.5707963267948966 },
+    { "id": "bike", "type": "bike", "x": 74, "y": 0.7, "z": 68, "rotation": 0 }
+  ],
+  "shop": { "x": -58, "y": 0, "z": 52 }
+}

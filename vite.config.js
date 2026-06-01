@@ -12,6 +12,7 @@ const devAppMounts = {
   "waste-to-energy": resolve(rootDir, "beadndo", "dist"),
   "microsoft-vs-apple": resolve(rootDir, "adatelemzes-projekt"),
   "last-ring-arena": resolve(rootDir, "jatek-projekt"),
+  "danube-street-stories": resolve(rootDir, "jatekv2", "dist"),
   "romanian-cities-population": resolve(rootDir, "romania-nepesseg")
 };
 
